@@ -1,6 +1,7 @@
 // ============================================
 // CHARACTER.JS - Character Class and Management
 // ============================================
+
 class Character {
     constructor(name, classType = 'archer') {
         this.id = this.generateId();
@@ -29,6 +30,7 @@ class Character {
     }
     generateId() { return 'char_' + Date.now() + '_' + Math.floor(Math.random() * 10000); }
     initializeSkillTree() { if (this.skillTree && this.skillTree.nodes) { for (
+
 const nodeId in this.skillTree.nodes) { this.skills[nodeId] = { level: 0, unlocked: false }; } const rootId = this.skillTree.root; if (rootId && this.skills[rootId]) { this.skills[rootId].level = 1; this.skills[rootId].unlocked = true; } } }
     calculateMaxHealth() { const base = this.baseStats.health + (this.level - 1) * GameConfig.character.healthPerLevel; const classGrowth = (this.level - 1) * (this.classDef.growthRates?.health || 0); const equipmentBonus = this.getEquipmentStatBonus('health') || 0; const skillBonus = this.getSkillBonus('health') || 0; return Math.floor(base + classGrowth + equipmentBonus + skillBonus); }
     calculateMaxMana() { const base = this.baseStats.mana + (this.level - 1) * GameConfig.character.manaPerLevel; const classGrowth = (this.level - 1) * (this.classDef.growthRates?.mana || 0); const equipmentBonus = this.getEquipmentStatBonus('mana') || 0; const skillBonus = this.getSkillBonus('mana') || 0; return Math.floor(base + classGrowth + equipmentBonus + skillBonus); }
@@ -42,9 +44,7 @@ const nodeId in this.skillTree.nodes) { this.skills[nodeId] = { level: 0, unlock
     levelUp() { this.level++; this.skillPoints += GameConfig.skills.skillPointsPerLevel; this.updateStats(); this.heal(this.stats.maxHealth); console.log(`Level up! Now level ${this.level}`); }
     addGold(amount) { this.gold += amount * GameConfig.progression.goldMultiplier; return this.gold; }
     attack(target) { if (!this.isAlive || this.isCasting) return 0; const now = Date.now(); if (now < this.attackCooldown) return 0; const baseDamage = this.stats.attack; const crit = Math.random() * 100 < this.stats.critChance; const damage = crit ? baseDamage * this.stats.critMultiplier : baseDamage; const cooldown = 1000 / this.stats.attackSpeed; this.attackCooldown = now + cooldown; return Math.floor(damage); }
-    castSpell(spellId, targets) { if (!this.isAlive) return false; const spell = SpellDefinitions[spellId]; if (!s
-pe
-ll) return false; if (!this.abilities.includes(spellId)) return false; const manaCost = spell.baseMana
+    castSpell(spellId, targets) { if (!this.isAlive) return false; const spell = SpellDefinitions[spellId]; if (!spell) return false; if (!this.abilities.includes(spellId)) return false; const manaCost = spell.baseMana
 Cost * GameConfig.spells.manaCostMultiplier; if (this.stats.mana < manaCost) return false; const now = Date.now(); if (this.spellCooldowns[spellId] && now < this.spellCooldowns[spellId]) return false; this.stats.mana -= manaCost; const cooldown = spell.baseCooldown * GameConfig.spells.cooldownReduction; this.spellCooldowns[spellId] = now + cooldown; this.isCasting = true; this.currentSpell = spell; switch (spell.type) { case 'damage': this.castDamageSpell(spell, targets); break; case 'heal': this.castHealSpell(spell, targets); break; case 'aoe': this.castAoESpell(spell, targets); break; case 'buff': this.castBuffSpell(spell, targets); break; case 'debuff': this.castDebuffSpell(spell, targets); break; } setTimeout(() => { this.isCasting = false; this.currentSpell = null; }, 500); return true; }
     castDamageSpell(spell, targets) { const damage = spell.baseDamage * GameConfig.spells.damageMultiplier; if (Array.isArray(targets)) { targets.forEach(target => { if (target && target.isAlive) target.takeDamage(Math.floor(damage)); }); } else if (targets) { targets.takeDamage(Math.floor(damage)); } }
     castHealSpell(spell, targets) { const healAmount = spell.baseHeal * GameConfig.spells.damageMultiplier; if (Array.isArray(targets)) { targets.forEach(target => { if (target && target.isAlive) target.heal(Math.floor(healAmount)); }); } else if (targets) { targets.heal(Math.floor(healAmount)); } else { this.heal(Math.floor(healAmount)); } }
