@@ -62,11 +62,11 @@ function startGameLoop() {
     if (!game) return;
     
     // The game engine handles its own loop
-    // This is just a fallback
+    // This is just a fallback that delegates to the engine's renderer
     function gameLoop() {
-        if (game) {
+        if (game && game.renderer) {
             game.update(game.deltaTime || 16);
-            game.render();
+            game.renderer.render(game.deltaTime || 16);
         }
         requestAnimationFrame(gameLoop);
     }
