@@ -71,6 +71,7 @@ class DataManager {
 
     /**
      * Get all c
+
 haracters
      */
     getAllCharacters() {
@@ -126,7 +127,8 @@ haracters
         character.equipment = data.equipment || character.equipment;
         character.skills = data.skills || character.skills;
         character.abilities = data.abilities || character.abilities;
-        character.gold = data.gold ||
+        character.gold = data.gold |
+|
  0;
         character.kills = data.kills || 0;
         character.dungeonsCompleted = data.dungeonsCompleted || 0;
@@ -205,7 +207,8 @@ haracters
                 this.gameData = { ...this.gameData, ...data };
             }
             this.gameData.lastUpdated = new Date().toISOString();
-          
+        
+  
   return true;
         } catch (e) {
             console.error('Error importing data:', e);
@@ -288,6 +291,7 @@ haracters
                 totalGold: 0,
                 totalXP: 0,
                 dungeonsCompleted: 0,
+
    
              playTime: 0
             }
