@@ -27,6 +27,7 @@ class DataManager {
                 playTime: 0
             }
         };
+        this.fileUtils = new FileUtils();
     }
 
     /**
@@ -69,7 +70,8 @@ class DataManager {
     }
 
     /**
-     * Get all characters
+     * Get all c
+haracters
      */
     getAllCharacters() {
         return this.gameData.characters.map(data => this.deserializeCharacter(data));
@@ -124,7 +126,8 @@ class DataManager {
         character.equipment = data.equipment || character.equipment;
         character.skills = data.skills || character.skills;
         character.abilities = data.abilities || character.abilities;
-        character.gold = data.gold || 0;
+        character.gold = data.gold ||
+ 0;
         character.kills = data.kills || 0;
         character.dungeonsCompleted = data.dungeonsCompleted || 0;
         character.wavesSurvived = data.wavesSurvived || 0;
@@ -202,7 +205,8 @@ class DataManager {
                 this.gameData = { ...this.gameData, ...data };
             }
             this.gameData.lastUpdated = new Date().toISOString();
-            return true;
+          
+  return true;
         } catch (e) {
             console.error('Error importing data:', e);
             return false;
@@ -225,14 +229,14 @@ class DataManager {
      */
     exportToFile(filename = 'autoblattler_save.json') {
         const data = this.exportData();
-        return downloadFile(data, filename, 'application/json');
+        return this.fileUtils.downloadFile(data, filename, 'application/json');
     }
 
     /**
      * Import from file
      */
     async importFromFile(file) {
-        const content = await readFileAsText(file);
+        const content = await this.fileUtils.readFile(file);
         return this.importData(content);
     }
 
@@ -284,7 +288,8 @@ class DataManager {
                 totalGold: 0,
                 totalXP: 0,
                 dungeonsCompleted: 0,
-                playTime: 0
+   
+             playTime: 0
             }
         };
     }
@@ -298,9 +303,9 @@ class DataManager {
 }
 
 // Global data manager instance
-var dataManager = new DataManager();
+const dataManager = new DataManager();
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { DataManager, dataManager };
+    module.exports = { DataManager, getDataManager, dataManager };
 }
