@@ -26,9 +26,7 @@ class DataManager {
                 dungeonsCompleted: 0,
                 playTime: 0
             }
-        };
-        
-    }
+        };}
 
     /**
      * Initialize with default data
