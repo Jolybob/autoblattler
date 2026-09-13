@@ -27,7 +27,6 @@ class DataManager {
                 playTime: 0
             }
         };
-        this.fileUtils = new FileUtils();
     }
 
     /**
