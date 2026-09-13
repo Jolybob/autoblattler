@@ -69,9 +69,7 @@ class Renderer {
      */
     handleResize() {
         const container = document.getElementById('game-container') || document.body;
-        const width = container.clientWidth || window.innerWidt
-
-h;
+        const width = container.clientWidth || window.innerWidth;
         const height = container.clientHeight || window.innerHeight;
         
         // Set canvas size
