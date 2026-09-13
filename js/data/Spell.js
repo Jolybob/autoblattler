@@ -1,0 +1,1 @@
+// Spell class - full content to be pushed
