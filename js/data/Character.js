@@ -27,24 +27,9 @@ class Character {
         this.gold = GameConfig.character.startingGold || 0;
         this.dungeonsCompleted = 0;
         this.wavesSurvived = 0;
-        this.initializeSkillsFromTree();
         this.initializeSkillTree();
     }
     generateId() { return 'char_' + Date.now() + '_' + Math.floor(Math.random() * 10000); }
-
-    initializeSkillsFromTree() {
-        if (this.skillTree) {
-            const allNodes = this.skillTree.getAllNodes();
-            for (const node of allNodes) {
-                this.skills[node.id] = { level: 0, unlocked: false };
-            }
-            const rootNode = this.skillTree.rootNode;
-            if (rootNode && this.skills[rootNode.id]) {
-                this.skills[rootNode.id].level = 1;
-                this.skills[rootNode.id].unlocked = true;
-            }
-        }
-    }
     initializeSkillTree() { if (this.skillTree && this.skillTree.nodes) { for (
 const nodeId in this.skillTree.nodes) { this.skills[nodeId] = { level: 0, unlocked: false }; } const rootId = this.skillTree.root; if (rootId && this.skills[rootId]) { this.skills[rootId].level = 1; this.skills[rootId].unlocked = true; } } }
     calculateMaxHealth() { const base = this.baseStats.health + (this.level - 1) * GameConfig.character.healthPerLevel; const classGrowth = (this.level - 1) * (this.classDef.growthRates?.health || 0); const equipmentBonus = this.getEquipmentStatBonus('health') || 0; const skillBonus = this.getSkillBonus('health') || 0; return Math.floor(base + classGrowth + equipmentBonus + skillBonus); }
