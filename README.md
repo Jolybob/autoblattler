@@ -174,5 +174,3 @@ Inspired by [Zad Archery](https://store.steampowered.com/app/4412000/Zad_Archery
 ## Contributing
 
 Contributions are welcome! Feel free to submit pull requests with new features, bug fixes, or improvements.
-
-<!-- TEST: checking push at 2026-09-13T19:37:50.398Z -->
