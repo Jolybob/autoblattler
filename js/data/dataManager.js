@@ -1,10 +1,12 @@
 // ============================================
 // DATAMANAGER.JS - Data Management System
 // ============================================
+
 /**
  * Central data manager for the game
  * Handles loading, saving, and managing all game data
  */
+
 class DataManager {
     constructor() {
         this.gameData = {
@@ -25,8 +27,9 @@ class DataManager {
                 playTime: 0
             }
         };
-        
+        this.fileUtils = new FileUtils();
     }
+
     /**
      * Initialize with default data
      */
@@ -39,6 +42,7 @@ class DataManager {
             this.gameData.characters.push(this.serializeCharacter(defaultCharacter));
         }
     }
+
     /**
      * Save character
      */
@@ -55,6 +59,7 @@ class DataManager {
         this.gameData.lastUpdated = new Date().toISOString();
         return serialized;
     }
+
     /**
      * Load character by ID
      */
@@ -63,14 +68,14 @@ class DataManager {
         if (!data) return null;
         return this.deserializeCharacter(data);
     }
-    /**
-     * Get all c
 
-haracters
+    /**
+     * Get all characters
      */
     getAllCharacters() {
         return this.gameData.characters.map(data => this.deserializeCharacter(data));
     }
+
     /**
      * Delete character
      */
@@ -78,6 +83,7 @@ haracters
         this.gameData.characters = this.gameData.characters.filter(c => c.id !== characterId);
         this.gameData.lastUpdated = new Date().toISOString();
     }
+
     /**
      * Serialize character for storage
      */
@@ -103,6 +109,7 @@ haracters
             attackCooldown: 0
         };
     }
+
     /**
      * Deserialize character from storage
      */
@@ -118,15 +125,13 @@ haracters
         character.equipment = data.equipment || character.equipment;
         character.skills = data.skills || character.skills;
         character.abilities = data.abilities || character.abilities;
-        character.gold = data.gold 
-|
-|
- 0;
+        character.gold = data.gold || 0;
         character.kills = data.kills || 0;
         character.dungeonsCompleted = data.dungeonsCompleted || 0;
         character.wavesSurvived = data.wavesSurvived || 0;
         return character;
     }
+
     /**
      * Save game configuration
      */
@@ -134,12 +139,14 @@ haracters
         this.gameData.config = config;
         this.gameData.lastUpdated = new Date().toISOString();
     }
+
     /**
      * Load game configuration
      */
     loadConfig() {
         return this.gameData.config || {};
     }
+
     /**
      * Unlock content
      */
@@ -150,12 +157,14 @@ haracters
         this.gameData.unlockedContent[type][id] = true;
         this.gameData.lastUpdated = new Date().toISOString();
     }
+
     /**
      * Check if content is unlocked
      */
     isUnlocked(type, id) {
         return this.gameData.unlockedContent[type] && this.gameData.unlockedContent[type][id];
     }
+
     /**
      * Update statistics
      */
@@ -165,18 +174,21 @@ haracters
             this.gameData.lastUpdated = new Date().toISOString();
         }
     }
+
     /**
      * Get statistics
      */
     getStatistics() {
         return { ...this.gameData.statistics };
     }
+
     /**
      * Export all game data as JSON
      */
     exportData() {
         return JSON.stringify(this.gameData, null, 2);
     }
+
     /**
      * Import game data from JSON
      */
@@ -191,15 +203,13 @@ haracters
                 this.gameData = { ...this.gameData, ...data };
             }
             this.gameData.lastUpdated = new Date().toISOString();
-      
-  
-  
-  return true;
+            return true;
         } catch (e) {
             console.error('Error importing data:', e);
             return false;
         }
     }
+
     /**
      * Migrate data from older versions
      */
@@ -208,84 +218,17 @@ haracters
         if (data.version === '1.0.0') {
             return data;
         }
+        // For future versions, add migration logic
         return data;
     }
-    /**
-     * Export to file
-     */
-    exportToFile(filename = 'autoblattler_save.json') {
-        const data = this.exportData();
-        return this.fileUtils.downloadFile(data, filename, 'application/json');
-    }
-    /**
-     * Import from file
-     */
-    async importFromFile(file) {
-        const content = await this.fileUtils.readFile(file);
-        return this.importData(content);
-    }
-    /**
-     * Save to local storage (fallback)
-     */
-    saveToLocalStorage() {
-        try {
-            localStorage.setItem('autoblattler_save', this.exportData());
-            return true;
-        } catch (e) {
-            console.error('Error saving to localStorage:', e);
-            return false;
-        }
-    }
-    /**
-     * Load from local storage
-     */
-    loadFromLocalStorage() {
-        try {
-            const data = localStorage.getItem('autoblattler_save');
-            if (data) {
-                return this.importData(data);
-            }
-            return false;
-        } catch (e) {
-            console.error('Error loading from localStorage:', e);
-            return false;
-        }
-    }
-    /**
-     * Clear all data
-     */
-    clearAllData() {
-        this.gameData = {
-            version: '1.0.0',
-            lastUpdated: new Date().toISOString(),
-            characters: [],
-            config: null,
-            unlockedContent: {
-                classes: {},
-                dungeons: {},
-                spells: {}
-            },
-            statistics: {
-                totalKills: 0,
-                totalGold: 0,
-                totalXP: 0,
-                dungeonsCompleted: 
-0,
-   
-             playTime: 0
-            }
-        };
-    }
-    /**
-     * Get complete game state
-     */
-    getGameState() {
-        return { ...this.gameData };
-    }
 }
-// Global data manager instance
-const dataManager = new DataManager();
-// Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { DataManager, dataManager };
+
+// Lazy initialization - create singleton instance
+let dataManagerInstance = null;
+function getDataManager() {
+    if (!dataManagerInstance) {
+        dataManagerInstance = new DataManager();
+        dataManagerInstance.init();
+    }
+    return dataManagerInstance;
 }
