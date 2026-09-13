@@ -79,7 +79,8 @@ class GameEngine {
      */
     stop() {
         this.isRunning = false;
-      
+ 
+     
   console.log('Game stopped');
     }
 
@@ -166,7 +167,8 @@ class GameEngine {
         }
     }
 
-    /**
+  
+  /**
 
      * Update character
      */
@@ -235,7 +237,8 @@ class GameEngine {
         }
         
         this.currentDungeon = new Dungeon(dungeonId, this.character);
-        this.currentWave = 0;
+        this.currentWave =
+ 0;
    
      this.gameMode = 'dungeon';
         
@@ -323,7 +326,8 @@ class GameEngine {
      * Register render callback
      */
     onRender(callback) {
-        this.renderCallba
+        this.rend
+erCallba
 cks.push(callback);
     }
 
@@ -394,8 +398,8 @@ cks.push(callback);
             } : null,
             dungeon: this.currentDungeon ? {
                 name: this.currentDungeon.definition.name,
-                curren
-tWave: this.currentWave,
+             
+   currentWave: this.currentWave,
                 totalWaves: this.currentDungeon.totalWaves
             } : null
         };
