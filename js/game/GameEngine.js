@@ -47,8 +47,7 @@ class GameEngine {
         // Initialize systems
         this.combatSystem = new CombatSystem(this);
         this.progressionSystem = new ProgressionSystem(this);
-        this.dataManager = new DataManager();
-        this.dataManager.init();
+        this.dataManager = getDataManager();
         
         // Load saved data
         this.loadGame();
