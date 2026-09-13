@@ -27,7 +27,7 @@ class DataManager {
                 playTime: 0
             }
         };
-        this.fileUtils = new FileUtils();
+        
     }
 
     /**
@@ -229,14 +229,14 @@ haracters
      */
     exportToFile(filename = 'autoblattler_save.json') {
         const data = this.exportData();
-        return this.fileUtils.downloadFile(data, filename, 'application/json');
+        return downloadFile(data, filename, 'application/json');
     }
 
     /**
      * Import from file
      */
     async importFromFile(file) {
-        const content = await this.fileUtils.readFile(file);
+        const content = await readFileAsText(file);
         return this.importData(content);
     }
 
@@ -303,7 +303,7 @@ haracters
 }
 
 // Global data manager instance
-var dataManager = new DataManager();
+const dataManager = new DataManager();
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
