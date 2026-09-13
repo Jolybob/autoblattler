@@ -46,7 +46,8 @@
                 </div>
                 
                 <div class="action-buttons">
-                    <button id="start-wave" class="action-button">Start Wave</button>
+  
+                  <button id="start-wave" class="action-button">Start Wave</button>
                     <button id="use-spell-1" class="action-button spell-button">Spell 1</button>
                     <button id="use-spell-2" class="action-button spell-button">Spell 2</button>
                     <button id="use-spell-3" class="action-button spell-button">Spell 3</button>
@@ -77,7 +78,8 @@
                     <div class="config-section"><label>Base Health:</label><input type="number" id="config-base-health" value="100"></div>
                     <div class="config-section"><label>Base Mana:</label><input type="number" id="config-base-mana" value="50"></div>
                     <div class="config-section"><label>Base Attack:</label><input type="number" id="config-base-attack" value="10"></div>
-                    <div class="config-section"><label>Base Defense:</label><input type="number" id="config-base-defense" value="5"></div>
+                    <div class="config-section"><label>Base D
+efense:</label><input type="number" id="config-base-defense" value="5"></div>
                     <div class="config-section"><label>Health per Level:</label><input type="number" id="config-health-per-level" value="20"></div>
                     <div class="config-section"><label>Mana per Level:</label><input type="number" id="config-mana-per-level" value="10"></div>
                     <div class="config-section"><label>Attack per Level:</label><input type="number" id="config-attack-per-level" value="2"></div>
@@ -93,7 +95,8 @@
                     <div class="config-section"><label>Enemies per Wave:</label><input type="number" id="config-enemies-per-wave" value="5"></div>
                     <div class="config-section"><label>Wave Difficulty Scaling:</label><input type="number" id="config-wave-scaling" step="0.1" value="1.1"></div>
                     <button class="save-button" onclick="saveMonsterConfig()">Save Monster Config</button>
-                </div>
+                
+</div>
                 <div id="tab-spells" class="admin-tab-content">
                     <h3>Spell Parameters</h3>
                     <div class="config-section"><label>Spell Cooldown Reduction:</label><input type="number" id="config-spell-cooldown" step="0.1" value="1.0"></div>
@@ -113,7 +116,8 @@
                 </div>
                 <div id="tab-classes" class="admin-tab-content">
                     <h3>Class Parameters</h3>
-                    <div class="class-list"><h4>Available Classes:</h4><div id="class-config-list"></div></div>
+                    <div class=
+"class-list"><h4>Available Classes:</h4><div id="class-config-list"></div></div>
                     <div class="config-section"><label>Class Unlock Level:</label><input type="number" id="config-class-unlock-level" value="10"></div>
                     <button class="save-button" onclick="saveClassConfig()">Save Class Config</button>
                 </div>
@@ -131,7 +135,8 @@
                     <div class="config-section"><label>XP Scaling Factor:</label><input type="number" id="config-xp-scaling" step="0.1" value="1.5"></div>
                     <div class="config-section"><label>Gold per Kill Base:</label><input type="number" id="config-gold-base" value="10"></div>
                     <div class="config-section"><label>Gold Scaling Factor:</label><input type="number" id="config-gold-scaling" step="0.1" value="1.2"></div>
-                    <div class="config-section"><label>Loot Drop Chance (%):</label><input type="number" id="config-loot-chance" value="25"></div>
+                    <div class="config-section"><label>Loot
+ Drop Chance (%):</label><input type="number" id="config-loot-chance" value="25"></div>
                     <button class="save-button" onclick="saveProgressionConfig()">Save Progression Config</button>
                 </div>
             </div>
@@ -146,12 +151,12 @@
     <script src="js/utils/helpers.js"></script>
     <script src="js/utils/fileUtils.js"></script>
     <script src="js/data/models.js"></script>
+    <script src="js/data/SkillTree.js"></script>
+    <script src="js/data/Class.js"></script>
     <script src="js/data/Character.js"></script>
     <script src="js/data/Monster.js"></script>
     <script src="js/data/Spell.js"></script>
     <script src="js/data/Dungeon.js"></script>
-    <script src="js/data/Class.js"></script>
-    <script src="js/data/SkillTree.js"></script>
     <script src="js/data/dataManager.js"></script>
     <script src="js/game/Renderer.js"></script>
     <script src="js/game/CombatSystem.js"></script>
