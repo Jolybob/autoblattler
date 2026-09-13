@@ -47,7 +47,7 @@ class GameEngine {
         // Initialize systems
         this.combatSystem = new CombatSystem(this);
         this.progressionSystem = new ProgressionSystem(this);
-        this.dataManager = dataManager;
+        this.dataManager = getDataManager();
         
         // Load saved data
         this.loadGame();
@@ -79,7 +79,8 @@ class GameEngine {
      */
     stop() {
         this.isRunning = false;
-        console.log('Game stopped');
+      
+  console.log('Game stopped');
     }
 
     /**
@@ -166,6 +167,7 @@ class GameEngine {
     }
 
     /**
+
      * Update character
      */
     updateCharacter(deltaTime) {
@@ -234,7 +236,8 @@ class GameEngine {
         
         this.currentDungeon = new Dungeon(dungeonId, this.character);
         this.currentWave = 0;
-        this.gameMode = 'dungeon';
+   
+     this.gameMode = 'dungeon';
         
         // Start the first wave
         this.currentDungeon.start();
@@ -320,7 +323,8 @@ class GameEngine {
      * Register render callback
      */
     onRender(callback) {
-        this.renderCallbacks.push(callback);
+        this.renderCallba
+cks.push(callback);
     }
 
     /**
@@ -390,7 +394,8 @@ class GameEngine {
             } : null,
             dungeon: this.currentDungeon ? {
                 name: this.currentDungeon.definition.name,
-                currentWave: this.currentWave,
+                curren
+tWave: this.currentWave,
                 totalWaves: this.currentDungeon.totalWaves
             } : null
         };
