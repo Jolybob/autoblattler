@@ -27,9 +27,24 @@ class Character {
         this.gold = GameConfig.character.startingGold || 0;
         this.dungeonsCompleted = 0;
         this.wavesSurvived = 0;
+        this.initializeSkillsFromTree();
         this.initializeSkillTree();
     }
     generateId() { return 'char_' + Date.now() + '_' + Math.floor(Math.random() * 10000); }
+
+    initializeSkillsFromTree() {
+        if (this.skillTree) {
+            const allNodes = this.skillTree.getAllNodes();
+            for (const node of allNodes) {
+                this.skills[node.id] = { level: 0, unlocked: false };
+            }
+            const rootNode = this.skillTree.rootNode;
+            if (rootNode && this.skills[rootNode.id]) {
+                this.skills[rootNode.id].level = 1;
+                this.skills[rootNode.id].unlocked = true;
+            }
+        }
+    }
     initializeSkillTree() { if (this.skillTree && this.skillTree.nodes) { for (
 const nodeId in this.skillTree.nodes) { this.skills[nodeId] = { level: 0, unlocked: false }; } const rootId = this.skillTree.root; if (rootId && this.skills[rootId]) { this.skills[rootId].level = 1; this.skills[rootId].unlocked = true; } } }
     calculateMaxHealth() { const base = this.baseStats.health + (this.level - 1) * GameConfig.character.healthPerLevel; const classGrowth = (this.level - 1) * (this.classDef.growthRates?.health || 0); const equipmentBonus = this.getEquipmentStatBonus('health') || 0; const skillBonus = this.getSkillBonus('health') || 0; return Math.floor(base + classGrowth + equipmentBonus + skillBonus); }
@@ -68,6 +83,6 @@ illId]; if (!node) return false; if (this.skills[skillId] && this.skills[skillId
     upgradeSkill(skillId) { const skill = this.skills[skillId]; if (!skill || !skill.unlocked) return false; const node = this.skillTree.nodes[skillId]; if (!node) return false; if (skill.level >= node.maxLevel) return false; if (this.skillPoints < 1) return false; skill.level++; this.skillPoints--; this.updateStats(); return true; }
     toJSON() { return { id: this.id, name: this.name, classType: this.classType, level: this.level, experience: this.experience, skillPoints: this.skillPoints, baseStats: this.baseStats, stats: this.stats, position: this.position, isAlive: this.isAlive, equipment: this.equipment, skills: this.skills, abilities: this.abilities, kills: this.kills, gold: this.gold, dungeonsCompleted: this.dungeonsCompleted, wavesSurvived: this.wavesSurvived }; }
     fromJSON(data) { this.id = data.id || this.id; this.name = data.name || this.name; this.classType = data.classType || this.classType; this.level = data.level || this.level; th
-is.experience = data.experience || this.experience; this.skillPoints = data.skillPoints || this.skillPoints; this.baseStats = data.baseStats || this.baseStats; this.stats = data.stats || this.stats; this.position = data.position || this.position; this.isAlive = data.isAlive !== undefined ? data.isAlive : this.isAlive; this.equipment = data.equipment || this.equipment; this.skills = data.skills || this.skills; this.abilities = data.abilities || this.abilities; this.kills = data.kills || this.kills; this.gold = data.gold || this.gold; this.dungeonsCompleted = data.dungeonsCompleted || this.dungeonsCompleted; this.wavesSurvived = data.wavesSurvived || this.wavesSurvived; this.classDef = ClassDefinitions[this.classType] || ClassDefinitions[CharacterClass.ARCHER]; this.skillTree = new SkillTree(this.classType + '_tree', this); return this; }
+is.experience = data.experience || this.experience; this.skillPoints = data.skillPoints || this.skillPoints; this.baseStats = data.baseStats || this.baseStats; this.stats = data.stats || this.stats; this.position = data.position || this.position; this.isAlive = data.isAlive !== undefined ? data.isAlive : this.isAlive; this.equipment = data.equipment || this.equipment; this.skills = data.skills || this.skills; this.abilities = data.abilities || this.abilities; this.kills = data.kills || this.kills; this.gold = data.gold || this.gold; this.dungeonsCompleted = data.dungeonsCompleted || this.dungeonsCompleted; this.wavesSurvived = data.wavesSurvived || this.wavesSurvived; this.classDef = ClassDefinitions[this.classType] || ClassDefinitions[CharacterClass.ARCHER]; this.skillTree = this.classType in SkillTreeDefinitions ? SkillTreeDefinitions[this.classType + '_tree'] : SkillTreeDefinitions.archer_tree; return this; }
     static fromJSON(data) { const character = new Character(data.name, data.classType); return character.fromJSON(data); }
 }
