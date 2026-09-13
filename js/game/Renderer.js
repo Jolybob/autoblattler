@@ -30,8 +30,7 @@ class Renderer {
      * Initialize renderer
      */
     init() {
-        // Find or create canvas
-        this.canvas = document.getElementById('combat-canvas') || document.getElementById('game-canvas');
+        // Find or create canvas        this.canvas = document.getElementById('combat-canvas') || document.getElementById('game-canvas');
         if (!this.canvas) {
             this.canvas = document.createElement('canvas');
             this.canvas.id = 'game-canvas';
@@ -42,13 +41,11 @@ class Renderer {
         
         this.ctx = this.canvas.getContext('2d');
         
-        // Set up canvas style
-        this.canvas.style.backgroundColor = '#1a1a2e';
+        // Set up canvas style        this.canvas.style.backgroundColor = '#1a1a2e';
         this.canvas.style.display = 'block';
         this.canvas.style.margin = '0 auto';
         
-        // Add event listeners
-        this.setupEventListeners();
+        // Add event listeners        this.setupEventListeners();
         
         console.log('Renderer initialized');
     }
@@ -57,11 +54,9 @@ class Renderer {
      * Set up event listeners
      */
     setupEventListeners() {
-        // Handle window resize
-        window.addEventListener('resize', () => this.handleResize());
+        // Handle window resize        window.addEventListener('resize', () => this.handleResize());
         
-        // Initial resize
-        this.handleResize();
+        // Initial resize        this.handleResize();
     }
 
     /**
@@ -74,12 +69,10 @@ class Renderer {
 h;
         const height = container.clientHeight || window.innerHeight;
         
-        // Set canvas size
-        this.canvas.width = Math.min(width, 1200);
+        // Set canvas size        this.canvas.width = Math.min(width, 1200);
         this.canvas.height = Math.min(height - 100, 600);
         
-        // Recenter camera
-        if (this.gameEngine && this.gameEngine.character) {
+        // Recenter camera        if (this.gameEngine && this.gameEngine.character) {
             this.centerCameraOnCharacter();
         }
     }
@@ -91,19 +84,16 @@ h;
         const now = performance.now();
         this.deltaTime = deltaTime;
         
-        // Clear canvas
-        this.clearCanvas();
+        // Clear canvas        this.clearCanvas();
         
-        // Update render stats
-        this.renderStats.frameCount++;
+        // Update render stats        this.renderStats.frameCount++;
         if (now - this.renderStats.lastFpsUpdate >= 1000) {
             this.renderStats.fps = this.renderStats.frameCount;
             this.renderStats.frameCount = 0;
             this.renderStats.lastFpsUpdate = now;
         }
         
-        // Draw based on game mode
-        switch (this.gameEngine.gameMode) {
+        // Draw based on game mode        switch (this.gameEngine.gameMode) {
             case 'combat':
             case 'dungeon':
                 this.renderCombat();
@@ -115,14 +105,11 @@ h;
                 this.renderIdle();
         }
         
-        // Draw UI
-        this.renderUI();
+        // Draw UI        this.renderUI();
         
-        // Draw animations
-        this.renderAnimations();
+        // Draw animations        this.renderAnimations();
         
-        // Draw particle effects
-        this.renderParticles();
+        // Draw particle effects        this.renderParticles();
         
         this.lastRenderTime = now;
     }
@@ -144,24 +131,20 @@ h;
         const character = this.gameEngine.character;
         const dungeon = this.gameEngine.currentDungeon;
         
-        // Draw background
-        this.drawBackground(dungeon);
+        // Draw background        this.drawBackground(dungeon);
         
   
  
-     // Draw monsters
-        if (dungeon) {
+     // Draw monsters        if (dungeon) {
             const monsters = dungeon.getCurrentMonsters();
             for (const monster of monsters) {
                 this.drawMonster(monster);
             }
         }
         
-        // Draw character
-        this.drawCharacter(character);
+        // Draw character        this.drawCharacter(character);
         
-        // Draw combat UI
-        this.drawCombatUI();
+        // Draw combat UI        this.drawCombatUI();
     }
 
     /**
@@ -172,16 +155,13 @@ h;
         
         const character = this.gameEngine.character;
         
-        // Draw background
-        this.drawBackground();
+        // Draw background        this.drawBackground();
         
-        // Draw character in the center
-        character.position.x = this.canvas.width / 2;
+        // Draw character in the center        character.position.x = this.canvas.width / 2;
         character.position.y = this.canvas.height / 2;
         this.drawCharacter(character);
         
-        // Draw idle UI
-        this.drawIdleUI();
+        // Draw idle UI        this.drawIdleUI();
     }
 
     /**
@@ -198,16 +178,14 @@ h;
     drawBackground(dungeon) {
         const bgColor = dungeon ? dungeon.definition.color : '#16213e';
         
-        // Draw gradient background
-        const gradient = this.ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
+        // Draw gradient background        const gradient = this.ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
         gradient.addColorStop(0, bgColor);
         gradient.addColorStop(1, this.adjustAlpha(bgColor, 0.5));
         
         this.ctx.fillStyle = gradient;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Draw dungeon-specific background if available
-        if (dungeon && dungeon.definition.background) {
+        // Draw dungeon-specific background if available        if (dungeon && dungeon.definition.background) {
             this.drawDungeonBackground(dungeon.definition.background);
         }
     }
@@ -216,8 +194,7 @@ h;
      * Draw dungeon background
      */
     drawDungeonBackground(backgroundType) {
-        // Draw background based on type
-        switch (backgroundType) {
+        // Draw background based on type        switch (backgroundType) {
             case 'forest'
 :
                 this.drawForestBackground();
@@ -240,8 +217,7 @@ h;
      * Draw forest background
      */
     drawForestBackground() {
-        // Draw trees
-        this.ctx.fillStyle = '#228B22';
+        // Draw trees        this.ctx.fillStyle = '#228B22';
         for (let i = 0; i < 5; i++) {
             const x = Math.random() * this.canvas.width;
             const y = Math.random() * this.canvas.height;
@@ -253,8 +229,7 @@ h;
      * Draw crypt background
      */
     drawCryptBackground() {
-        // Draw stone walls
-        this.ctx.fillStyle = '#555';
+        // Draw stone walls        this.ctx.fillStyle = '#555';
         for (let x = 0; x < this.canvas.width; x += 50) {
             this.ctx.fillRect(x, 0, 10, this.canvas.height);
         }
@@ -264,8 +239,7 @@ h;
      * Draw fortress background
      */
     drawFortressBackground() {
-        // Draw brick pattern
-        this.ctx.fillStyle = '#8B4513';
+        // Draw brick pattern        this.ctx.fillStyle = '#8B4513';
         for (let x = 0; x < this.canvas.width; x += 30) {
             for (let y = 0; y < this.canvas.height; y += 20) {
                 this.ctx.fillRect(x, y, 25, 15);
@@ -277,16 +251,14 @@ h;
      * Draw abyss background
      */
     drawAbyssBackground() {
-        // Draw dark swirling pattern
-        this.ctx.fillStyle = '#000';
+        // Draw dark swirling pattern        this.ctx.fillStyle = '#000';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
         this.ctx.strokeStyle = '#800080';
         this.ctx.lineWidth = 2;
         for (let i = 0; i < 10; i++) {
             this.ctx.beginPath();
-            this.ctx.arc(
-                this.canvas.width / 2,
+            this.ctx.arc(                this.canvas.width / 2,
                 this.canvas.height / 2,
                 i * 30,
                 0,
@@ -300,8 +272,7 @@ h;
      * Draw default background
      */
     drawDefaultBackground() {
-        // Draw simple gradient
-        const gradient = this.ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
+        // Draw simple gradient        const gradient = this.ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
         gradient.addColorStop(0, '#16213e');
         gradient.addColorStop(1, '#0f3460');
         this.ctx.fillStyle = gradient;
@@ -317,24 +288,19 @@ h;
         const x = character.position.x - this.camera.x;
         const y = character.position.y - this.camera.y;
         
-        // Draw character icon or sprite
-        const size = 40 * this.camera.zoom;
+        // Draw character icon or sprite        const size = 40 * this.camera.zoom;
         
-        // Draw health bar background
-        this.ctx.fillStyle = '#333';
+        // Draw health bar background        this.ctx.fillStyle = '#333';
         this.ctx.fillRect(x - size / 2, y - size / 2 - 10, size, 5);
         
-        // Draw health bar
-        const healthPercent = (character.stats.health / character.stats.maxHealth) * 100;
+        // Draw health bar        const healthPercent = (character.stats.health / character.stats.maxHealth) * 100;
         this.ctx.fillStyle = healthPercent > 50 ? '#4CAF50' : healthPercent > 25 ? '#FFC107' : '#F44336';
         this.ctx.fillRect(x - size / 2, y - size / 2 - 10, size * (healthPercent / 100), 5);
         
-        // Draw mana bar background
-        this.ctx.fillStyle = '#333';
+        // Draw mana bar background        this.ctx.fillStyle = '#333';
         this.ctx.fillRect(x - size / 2, y - size / 2 - 15, size, 3);
         
-        // Draw mana bar
-        const manaPercent = (character.stats.mana / character.stats.maxMana) * 100;
+        // Draw mana bar        const manaPercent = (character.stats.mana / character.stats.maxMana) * 100;
         this.ctx.fillStyle = '#2196F3';
         this.ctx.fillRect(x - size / 2, y - size / 2 - 15, size * (manaPercent / 100), 3);
         
@@ -347,17 +313,14 @@ h;
         
 
     
-    // Draw character name
-        this.ctx.font = '12px Arial';
+    // Draw character name        this.ctx.font = '12px Arial';
         this.ctx.fillStyle = '#fff';
         this.ctx.fillText(character.name, x, y - size / 2 - 20);
         
-        // Draw level
-        this.ctx.font = '10px Arial';
+        // Draw level        this.ctx.font = '10px Arial';
         this.ctx.fillText(`Lv. ${character.level}`, x + size / 2 + 5, y - size / 2 - 10);
         
-        // Draw casting indicator
-        if (character.isCasting && character.currentSpell) {
+        // Draw casting indicator        if (character.isCasting && character.currentSpell) {
             this.drawCastingIndicator(x, y, size, character.currentSpell);
         }
     }
@@ -383,8 +346,7 @@ h;
         const y = monster.position.y - this.camera.y;
         const size = 30 * this.camera.zoom;
         
-        // Draw monster icon
-        const def = MonsterDefinitions[monster.type];
+        // Draw monster icon        const def = MonsterDefinitions[monster.type];
         if (def) {
             this.ctx.font = `${size}px Arial`;
             this.ctx.textAlign = 'center';
@@ -392,15 +354,13 @@ h;
             this.ctx.fillText(def.icon, x, y);
         }
         
-        // Draw health bar
-        const healthPercent = (monster.stats.health / monster.stats.maxHealth) * 100;
+        // Draw health bar        const healthPercent = (monster.stats.health / monster.stats.maxHealth) * 100;
         this.ctx.fillStyle = '#333';
         this.ctx.fillRect(x - size / 2, y - size / 2 - 8, size, 3);
         this.ctx.fillStyle = healthPercent > 50 ? '#4CAF50' : healthPercent > 25 ? '#FFC107' : '#F44336';
         this.ctx.fillRect(x - size / 2, y - size / 2 - 8, size * (healthPercent / 100), 3);
         
-        // Draw boss indicator
-        if (monster.isBoss) {
+        // Draw boss indicator        if (monster.isBoss) {
             this.ctx.font = '10px Arial';
             this.ctx.fillStyle = '#FFD700';
   
@@ -408,8 +368,7 @@ h;
      this.ctx.fillText('BOSS', x, y + size / 2 + 10);
         }
         
-        // Draw stunned/frozen indicators
-        if (monster.isStunned) {
+        // Draw stunned/frozen indicators        if (monster.isStunned) {
             this.ctx.font = '10px Arial';
             this.ctx.fillStyle = '#FFEB3B';
             this.ctx.fillText('STUN', x - 15, y - size / 2 - 5);
@@ -431,16 +390,13 @@ h;
         const character = this.gameEngine.character;
         const dungeon = this.gameEngine.currentDungeon;
         
-        // Draw character info panel
-        this.drawCharacterPanel(character);
+        // Draw character info panel        this.drawCharacterPanel(character);
         
-        // Draw wave info
-        if (dungeon) {
+        // Draw wave info        if (dungeon) {
             this.drawWaveInfo(dungeon);
         }
         
-        // Draw spell hotbar
-        this.drawSpellHotbar(character);
+        // Draw spell hotbar        this.drawSpellHotbar(character);
     }
 
     /**
@@ -452,21 +408,18 @@ h;
         const width = 200;
         const height = 120;
         
-        // Draw background
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        // Draw background        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         this.ctx.fillRect(x, y, width, height);
         this.ctx.strokeStyle = '#fff';
         this.ctx.lineWidth = 1;
         this.ctx.strokeRect(x, y, width, height);
         
-        // Draw character info
-        this.ctx.font = '14px Arial';
+        // Draw character info        this.ctx.font = '14px Arial';
         this.ctx.fillStyle = '#fff';
         this.ctx.fillText(character.name, x + 10, y + 20);
         this.ctx.fillText(`Lv. ${character.level}`, x + 10, y + 35);
         
-        // Draw health bar
-        this.ctx.fillStyle = '#555';
+        // Draw health bar        this.ctx.fillStyle = '#555';
         this.ctx.fillRect(x + 10, y + 50, width - 20, 10);
         const healthPercent = (character.stats.health / character.stats.maxHealth) * 100;
         this.ctx.fillStyle = healthPercent > 
@@ -477,8 +430,7 @@ h;
         this.ctx.fillStyle = '#fff';
         this.ctx.fillText(`${character.stats.health}/${character.stats.maxHealth}`, x + 10, y + 65);
         
-        // Draw mana bar
-        this.ctx.fillStyle = '#555';
+        // Draw mana bar        this.ctx.fillStyle = '#555';
         this.ctx.fillRect(x + 10, y + 70, width - 20, 8);
         const manaPercent = (character.stats.mana / character.stats.maxMana) * 100;
         this.ctx.fillStyle = '#2196F3';
@@ -487,8 +439,7 @@ h;
         this.ctx.fillStyle = '#fff';
         this.ctx.fillText(`${character.stats.mana}/${character.stats.maxMana}`, x + 10, y + 85);
         
-        // Draw gold and XP
-        this.ctx.font = '12px Arial';
+        // Draw gold and XP        this.ctx.font = '12px Arial';
         this.ctx.fillText(`💰 ${character.gold}`, x + 10, y + 100);
         this.ctx.fillText(`📈 ${character.experience}/${character.calculateXPRequired()}`, x + 10, y + 115);
     }
@@ -502,21 +453,18 @@ h;
         const width = 200;
         const height = 60;
         
-        // Draw background
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        // Draw background        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         this.ctx.fillRect(x, y, width, height);
         this.ctx.strokeStyle = '#fff';
         this.ctx.lineWidth = 1;
         this.ctx.strokeRect(x, y, width, height);
         
-        // Draw wave info
-        this.ctx.font = '14px Arial';
+        // Draw wave info        this.ctx.font = '14px Arial';
         this.ctx.fillStyle = '#fff';
         this.ctx.fillText(dungeon.definition.name, x + 10, y + 20);
         this.ctx.fillText(`Wave: ${dungeon.currentWave + 1}/${dungeon.totalWaves}`, x + 10, y + 35);
         
-        // Draw progress bar
-        const progress = (dungeon.currentWave / dungeon.totalWaves) * 100;
+        // Draw progress bar        const progress = (dungeon.currentWave / dungeon.totalWaves) * 100;
         this.ctx.fillStyle = '#555';
         this.ctx.fillRect(x + 10, y + 45, width - 
 20, 8);
@@ -533,12 +481,10 @@ h;
         const width = 400;
         const height = 40;
         
-        // Draw background
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        // Draw background        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         this.ctx.fillRect(x, y, width, height);
         
-        // Draw spell slots
-        const spellCount = Math.min(character.abilities.length, 5);
+        // Draw spell slots        const spellCount = Math.min(character.abilities.length, 5);
         const slotWidth = width / spellCount;
         
         for (let i = 0; i < spellCount; i++) {
@@ -546,26 +492,22 @@ h;
             const spellDef = SpellDefinitions[spellId];
             
             if (spellDef) {
-                // Draw slot background
-                this.ctx.fillStyle = character.spellCooldowns[spellId] ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.1)';
+                // Draw slot background                this.ctx.fillStyle = character.spellCooldowns[spellId] ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.1)';
                 this.ctx.fillRect(x + i * slotWidth, y, slotWidth, height);
                 
-                // Draw spell icon
-                this.ctx.font = '20px Arial';
+                // Draw spell icon                this.ctx.font = '20px Arial';
                 this.ctx.textAlign = 'center';
                 this.ctx.textBaseline = 'middle';
                 this.ctx.fillText(spellDef.icon, x + i * slotWidth + slotWidth / 2, y + height / 2);
                 
-                // Draw cooldown indicator
-                if (character.spellCooldowns[spellId]) {
+                // Draw cooldown indicator                if (character.spellCooldowns[spellId]) {
                     const remaining = character.spellCooldowns[spellId] - Date.now();
                     const cooldownPercent = (remaining / spellDef.baseCooldown) * 100;
                     this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
                     this.ctx.fillRect(x + i * slotWidth, y + height - 5, slotWidth * (cooldownPercent / 100), 5);
                 }
                 
-                // Draw spell name
-                this.ctx.font = '8px Arial';
+                // Draw spell name                this.ctx.font = '8px Arial';
                 this.ctx.fillStyle = '#fff';
                 this.ctx.fillText(spellDef.name, x + i * slotWidth + slotWidth / 2, y + height - 5);
             }
@@ -580,11 +522,9 @@ h;
         
         const character = this.gameEngine.character;
         
-        // Draw character info
-        this.drawCharacterPanel(character);
+        // Draw character info        this.drawCharacterPanel(character);
         
-        // Draw main menu
-        this.drawMainMenu();
+        // Draw main menu        this.drawMainMenu();
     }
 
     /**
@@ -594,14 +534,12 @@ h;
         const centerX = this.canvas.width / 2;
         const centerY = this.canvas.height / 2;
         
-        // Draw title
-        this.ctx.font = '36px Arial';
+        // Draw title        this.ctx.font = '36px Arial';
         this.ctx.fillStyle = '#fff';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('Auto Blattler', centerX, centerY - 100);
         
-        // Draw menu options
-        this.ctx.font = '20px Arial';
+        // Draw menu options        this.ctx.font = '20px Arial';
         this.ctx.fillText('Start Dungeon', centerX, centerY - 30);
         this.ctx.fillText('Admin Panel', centerX, centerY + 10);
         this.ctx.fillText('Export/Import', centerX, centerY + 50);
@@ -666,8 +604,7 @@ h;
      * Adjust alpha of a color
      */
     adjustAlpha(color, alpha) {
-        // Simple hex to rgba conversion
-        if (color.startsWith('#')) {
+        // Simple hex to rgba conversion        if (color.startsWith('#')) {
             const r = parseInt(color.slice(1, 3), 16);
             const g = parseInt(color.slice(3, 5), 16);
             const b = parseInt(color.slice(5, 7), 16);
