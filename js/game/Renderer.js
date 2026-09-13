@@ -31,7 +31,7 @@ class Renderer {
      */
     init() {
         // Find or create canvas
-        this.canvas = document.getElementById('game-canvas');
+        this.canvas = document.getElementById('combat-canvas') || document.getElementById('game-canvas');
         if (!this.canvas) {
             this.canvas = document.createElement('canvas');
             this.canvas.id = 'game-canvas';
