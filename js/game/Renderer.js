@@ -69,8 +69,7 @@ class Renderer {
      */
     handleResize() {
         const container = document.getElementById('game-container') || document.body;
-        const width = container.clientWidth || window.innerWidt
-h;
+        const width = container.clientWidth || window.innerWidth;
         const height = container.clientHeight || window.innerHeight;
         
         // Set canvas size
@@ -146,7 +145,8 @@ h;
         // Draw background
         this.drawBackground(dungeon);
         
-   
+  
+ 
      // Draw monsters
         if (dungeon) {
             const monsters = dungeon.getCurrentMonsters();
@@ -216,8 +216,7 @@ h;
     drawDungeonBackground(backgroundType) {
         // Draw background based on type
         switch (backgroundType) {
-            case 'forest'
-:
+            case 'forest':
                 this.drawForestBackground();
                 break;
             case 'crypt':
@@ -290,7 +289,8 @@ h;
                 0,
                 Math.PI * 2
             );
-            this.
+            th
+is.
 ctx.stroke();
         }
     }
@@ -344,6 +344,7 @@ ctx.stroke();
         this.ctx.textBaseline = 'middle';
         this.ctx.fillText(classDef ? classDef.icon : '🧙', x, y);
         
+
     
     // Draw character name
         this.ctx.font = '12px Arial';
@@ -401,7 +402,8 @@ ctx.stroke();
         if (monster.isBoss) {
             this.ctx.font = '10px Arial';
             this.ctx.fillStyle = '#FFD700';
-       
+  
+     
      this.ctx.fillText('BOSS', x, y + size / 2 + 10);
         }
         
@@ -466,8 +468,8 @@ ctx.stroke();
         this.ctx.fillStyle = '#555';
         this.ctx.fillRect(x + 10, y + 50, width - 20, 10);
         const healthPercent = (character.stats.health / character.stats.maxHealth) * 100;
-        this.ctx.fillStyle = healthPercent > 50 ? '
-#4CAF50' : healthPercent > 25 ? '#FFC107' : '#F44336';
+        this.ctx.fillStyle = healthPercent > 
+50 ? '#4CAF50' : healthPercent > 25 ? '#FFC107' : '#F44336';
         this.ctx.fillRect(x + 10, y + 50, (width - 20) * (healthPercent / 100), 10);
         this.ctx.font = '10px Arial';
         this.ctx.fillStyle = '#fff';
@@ -514,7 +516,8 @@ ctx.stroke();
         // Draw progress bar
         const progress = (dungeon.currentWave / dungeon.totalWaves) * 100;
         this.ctx.fillStyle = '#555';
-        this.ctx.fillRect(x + 10, y + 45, width - 
+        this.ctx.fillRect(x + 10, y + 45, w
+idth - 
 20, 8);
         this.ctx.fillStyle = '#4CAF50';
         this.ctx.fillRect(x + 10, y + 45, (width - 20) * (progress / 100), 8);
@@ -562,7 +565,8 @@ ctx.stroke();
                 
                 // Draw spell name
                 this.ctx.font = '8px Arial';
-                this.ctx.fillStyl
+                this.ctx.
+fillStyl
 e = '#fff';
                 this.ctx.fillText(spellDef.name, x + i * slotWidth + slotWidth / 2, y + height - 5);
             }
@@ -629,7 +633,8 @@ e = '#fff';
             if (particle.draw) particle.draw(this.ctx, this.camera);
             
             if (particle.isDead && particle.isDead()) {
-                this.particleEffe
+                this.par
+ticleEffe
 cts.splice(i, 1);
             }
         }
