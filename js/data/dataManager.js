@@ -307,5 +307,5 @@ const dataManager = new DataManager();
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { DataManager, getDataManager, dataManager };
+    module.exports = { DataManager, dataManager };
 }
