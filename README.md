@@ -48,7 +48,8 @@ autoblattler/
 │   │   └── AdminPanel.js     # Admin panel UI
 │   └── utils/
 │       ├── helpers.js       # Utility functions
-│       └── fileUtils.js     # File handling
+│       └── fileUtils.js
+     # File handling
 └── assets/
     ├── images/
     └── sounds/
@@ -117,7 +118,8 @@ The game uses JSON export/import for data persistence as requested:
 - Bosses appear every 5th wave
 
 ### Progression
-- Gain XP from defeating enemies
+- Gain XP fr
+om defeating enemies
 - Level up to unlock new abilities
 - Collect gold to buy items
 - Complete dungeons for special rewards
@@ -172,3 +174,5 @@ Inspired by [Zad Archery](https://store.steampowered.com/app/4412000/Zad_Archery
 ## Contributing
 
 Contributions are welcome! Feel free to submit pull requests with new features, bug fixes, or improvements.
+
+<!-- TEST: checking push at 2026-09-13T19:37:50.398Z -->
