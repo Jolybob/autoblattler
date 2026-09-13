@@ -69,9 +69,7 @@ class Renderer {
      */
     handleResize() {
         const container = document.getElementById('game-container') || document.body;
-        const width = container.clientWidth || window.innerWidt
-
-h;
+        const width = container.clientWidth || window.innerWidth;
         const height = container.clientHeight || window.innerHeight;
         
         // Set canvas size
@@ -147,9 +145,7 @@ h;
         // Draw background
         this.drawBackground(dungeon);
         
-  
- 
-     // Draw monsters
+        // Draw monsters
         if (dungeon) {
             const monsters = dungeon.getCurrentMonsters();
             for (const monster of monsters) {
@@ -218,9 +214,7 @@ h;
     drawDungeonBackground(backgroundType) {
         // Draw background based on type
         switch (backgroundType) {
-            case 'fores
-t'
-:
+            case 'forest':
                 this.drawForestBackground();
                 break;
             case 'crypt':
@@ -254,10 +248,14 @@ t'
      * Draw crypt background
      */
     drawCryptBackground() {
-        // Draw stone walls
-        this.ctx.fillStyle = '#555';
-        for (let x = 0; x < this.canvas.width; x += 50) {
-            this.ctx.fillRect(x, 0, 10, this.canvas.height);
+        this.ctx.fillStyle = '#333333';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Draw pillars
+        this.ctx.fillStyle = '#555555';
+        for (let i = 0; i < 3; i++) {
+            const x = (this.canvas.width / 4) * (i + 1);
+            this.ctx.fillRect(x - 10, 0, 20, this.canvas.height);
         }
     }
 
@@ -265,12 +263,17 @@ t'
      * Draw fortress background
      */
     drawFortressBackground() {
-        // Draw brick pattern
-        this.ctx.fillStyle = '#8B4513';
-        for (let x = 0; x < this.canvas.width; x += 30) {
-            for (let y = 0; y < this.canvas.height; y += 20) {
-                this.ctx.fillRect(x, y, 25, 15);
-            }
+        this.ctx.fillStyle = '#444444';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Draw bricks
+        this.ctx.strokeStyle = '#666666';
+        this.ctx.lineWidth = 2;
+        for (let x = 0; x < this.canvas.width; x += 40) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(x, 0);
+            this.ctx.lineTo(x, this.canvas.height);
+            this.ctx.stroke();
         }
     }
 
@@ -278,32 +281,17 @@ t'
      * Draw abyss background
      */
     drawAbyssBackground() {
-        // Draw dark swirling pattern
-        this.ctx.fillStyle = '#000';
+        const gradient = this.ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
+        gradient.addColorStop(0, '#000033');
+        gradient.addColorStop(1, '#000066');
+        this.ctx.fillStyle = gradient;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        
-        this.ctx.strokeStyle = '#800080';
-        this.ctx.lineWidth = 2;
-        for (let i = 0; i < 10; i++) {
-            this.ctx.beginPath();
-            this.ctx.arc(
-                this.canvas.width / 2,
-                this.canvas.height / 2,
-                i * 30,
-                0,
-                Math.PI * 2
-            );
-            th
-is.
-ctx.stroke();
-        }
     }
 
     /**
      * Draw default background
      */
     drawDefaultBackground() {
-        // Draw simple gradient
         const gradient = this.ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
         gradient.addColorStop(0, '#16213e');
         gradient.addColorStop(1, '#0f3460');
@@ -320,60 +308,23 @@ ctx.stroke();
         const x = character.position.x - this.camera.x;
         const y = character.position.y - this.camera.y;
         
-        // Draw character icon or sprite
-        const size = 40 * this.camera.zoom;
+        // Draw character body
+        this.ctx.fillStyle = this.getClassColor(character.classType);
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, 20, 0, Math.PI * 2);
+        this.ctx.fill();
         
-        // Draw health bar background
-        this.ctx.fillStyle = '#333';
-        this.ctx.fillRect(x - size / 2, y - size / 2 - 10, size, 5);
+        // Draw character name
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.font = '12px Arial';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(character.name, x, y - 25);
         
         // Draw health bar
-        const healthPercent = (character.stats.health / character.stats.maxHealth) * 100;
-        this.ctx.fillStyle = healthPercent > 50 ? '#4CAF50' : healthPercent > 25 ? '#FFC107' : '#F44336';
-        this.ctx.fillRect(x - size / 2, y - size / 2 - 10, size * (healthPercent / 100), 5);
-        
-        // Draw mana bar background
-        this.ctx.fillStyle = '#333';
-        this.ctx.fillRect(x - size / 2, y - size / 2 - 15, size, 3);
+        this.drawHealthBar(x, y - 30, character.stats.health, character.stats.maxHealth, 60, 8);
         
         // Draw mana bar
-        const manaPercent = (character.stats.mana / character.stats.maxMana) * 100;
-        this.ctx.fillStyle = '#2196F3';
-        this.ctx.fillRect(x - size / 2, y - size / 2 - 15, size * (manaPercent / 100), 3);
-        
-        // Draw character icon (using emoji as placeholder)
-        const classDef = ClassDefinitions[character.classType];
-        this.ctx.font = `${size}px Arial`;
-        this.ctx.textAlign = 'center';
-        this.ctx.textBaseline = 'middle';
-        this.ctx.fillText(classDef ? classDef.icon : '🧙', x, y);
-        
-
-    
-    // Draw character name
-        this.ctx.font = '12px Arial';
-        this.ctx.fillStyle = '#fff';
-        this.ctx.fillText(character.name, x, y - size / 2 - 20);
-        
-        // Draw level
-        this.ctx.font = '10px Arial';
-        this.ctx.fillText(`Lv. ${character.level}`, x + size / 2 + 5, y - size / 2 - 10);
-        
-        // Draw casting indicator
-        if (character.isCasting && character.currentSpell) {
-            this.drawCastingIndicator(x, y, size, character.currentSpell);
-        }
-    }
-
-    /**
-     * Draw casting indicator
-     */
-    drawCastingIndicator(x, y, size, spell) {
-        this.ctx.strokeStyle = spell.definition.color || '#fff';
-        this.ctx.lineWidth = 2;
-        this.ctx.beginPath();
-        this.ctx.arc(x, y, size / 2 + 10, 0, Math.PI * 2);
-        this.ctx.stroke();
+        this.drawManaBar(x, y - 40, character.stats.mana, character.stats.maxMana, 60, 4);
     }
 
     /**
@@ -384,45 +335,61 @@ ctx.stroke();
         
         const x = monster.position.x - this.camera.x;
         const y = monster.position.y - this.camera.y;
-        const size = 30 * this.camera.zoom;
         
-        // Draw monster icon
-        const def = MonsterDefinitions[monster.type];
-        if (def) {
-            this.ctx.font = `${size}px Arial`;
-            this.ctx.textAlign = 'center';
-            this.ctx.textBaseline = 'middle';
-            this.ctx.fillText(def.icon, x, y);
-        }
+        // Draw monster body
+        this.ctx.fillStyle = monster.color || '#ff0000';
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, 15, 0, Math.PI * 2);
+        this.ctx.fill();
+        
+        // Draw monster name
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.font = '10px Arial';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(monster.name, x, y - 20);
         
         // Draw health bar
-        const healthPercent = (monster.stats.health / monster.stats.maxHealth) * 100;
-        this.ctx.fillStyle = '#333';
-        this.ctx.fillRect(x - size / 2, y - size / 2 - 8, size, 3);
-        this.ctx.fillStyle = healthPercent > 50 ? '#4CAF50' : healthPercent > 25 ? '#FFC107' : '#F44336';
-        this.ctx.fillRect(x - size / 2, y - size / 2 - 8, size * (healthPercent / 100), 3);
+        this.drawHealthBar(x, y - 25, monster.health, monster.maxHealth, 40, 6);
+    }
+
+    /**
+     * Draw health bar
+     */
+    drawHealthBar(x, y, current, max, width, height) {
+        const percentage = current / max;
         
-        // Draw boss indicator
-        if (monster.isBoss) {
-            this.ctx.font = '10px Arial';
-            this.ctx.fillStyle = '#FFD700';
-  
-     
-     this.ctx.fillText('BOSS', x, y + size / 2 + 10);
-        }
+        // Background
+        this.ctx.fillStyle = '#333333';
+        this.ctx.fillRect(x - width / 2, y, width, height);
         
-        // Draw stunned/frozen indicators
-        if (monster.isStunned) {
-            this.ctx.font = '10px Arial';
-            this.ctx.fillStyle = '#FFEB3B';
-            this.ctx.fillText('STUN', x - 15, y - size / 2 - 5);
-        }
+        // Health fill
+        this.ctx.fillStyle = percentage > 0.5 ? '#4CAF50' : percentage > 0.25 ? '#FFC107' : '#F44336';
+        this.ctx.fillRect(x - width / 2, y, width * percentage, height);
         
-        if (monster.isFrozen) {
-            this.ctx.font = '10px Arial';
-            this.ctx.fillStyle = '#2196F3';
-            this.ctx.fillText('FROZEN', x - 20, y - size / 2 - 5);
-        }
+        // Border
+        this.ctx.strokeStyle = '#000000';
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(x - width / 2, y, width, height);
+    }
+
+    /**
+     * Draw mana bar
+     */
+    drawManaBar(x, y, current, max, width, height) {
+        const percentage = current / max;
+        
+        // Background
+        this.ctx.fillStyle = '#222222';
+        this.ctx.fillRect(x - width / 2, y, width, height);
+        
+        // Mana fill
+        this.ctx.fillStyle = '#2196F3';
+        this.ctx.fillRect(x - width / 2, y, width * percentage, height);
+        
+        // Border
+        this.ctx.strokeStyle = '#000000';
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(x - width / 2, y, width, height);
     }
 
     /**
@@ -434,145 +401,16 @@ ctx.stroke();
         const character = this.gameEngine.character;
         const dungeon = this.gameEngine.currentDungeon;
         
-        // Draw character info panel
-        this.drawCharacterPanel(character);
+        // Draw wave counter
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.font = '16px Arial';
+        this.ctx.textAlign = 'left';
+        this.ctx.fillText(`Wave: ${this.gameEngine.currentWave}`, 10, 20);
         
-        // Draw wave info
+        // Draw enemy count
         if (dungeon) {
-            this.drawWaveInfo(dungeon);
-        }
-        
-        // Draw spell hotbar
-        this.drawSpellHotbar(character);
-    }
-
-    /**
-     * Draw character panel
-     */
-    drawCharacterPanel(character) {
-        const x = 10;
-        const y = 10;
-        const width = 200;
-        const height = 120;
-        
-        // Draw background
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-        this.ctx.fillRect(x, y, width, height);
-        this.ctx.strokeStyle = '#fff';
-        this.ctx.lineWidth = 1;
-        this.ctx.strokeRect(x, y, width, height);
-        
-        // Draw character info
-        this.ctx.font = '14px Arial';
-        this.ctx.fillStyle = '#fff';
-        this.ctx.fillText(character.name, x + 10, y + 20);
-        this.ctx.fillText(`Lv. ${character.level}`, x + 10, y + 35);
-        
-        // Draw health bar
-        this.ctx.fillStyle = '#555';
-        this.ctx.fillRect(x + 10, y + 50, width - 20, 10);
-        const healthPercent = (character.stats.health / character.stats.maxHealth) * 100;
-        this.ctx.fillStyle = healthPercent > 50 ? '#4CAF50' : healthPercent > 25 ? '#FFC107' : '#F44336';
-        this.ctx.fillRect(x + 10, y + 50, (width - 20) * (healthPercent / 100), 10);
-        this.ctx.font = '10px Arial';
-        this.ctx.fillStyle = '#fff';
-        this.ctx.fillText(`${character.stats.health}/${character.stats.maxHealth}`, x + 10, y + 65);
-        
-        // Draw mana bar
-        this.ctx.fillStyle = '#555';
-        this.ctx.fillRect(x + 10, y + 70, width - 20, 8);
-        const manaPercent = (character.stats.mana / character.stats.maxMana) * 100;
-        this.ctx.fillStyle = '#2196F3';
-        this.ctx.fillRect(x + 10, y + 70, (width - 20) * (manaPercent / 100), 8);
-        this.ctx.font = '10px Arial';
-        this.ctx.fillStyle = '#fff';
-        this.ctx.fillText(`${character.stats.mana}/${character.stats.maxMana}`, x + 10, y + 85);
-        
-        // Draw gold and XP
-        this.ctx.font = '12px Arial';
-        this.ctx.fillText(`💰 ${character.gold}`, x + 10, y + 100);
-        this.ctx.fillText(`📈 ${character.experience}/${character.calculateXPRequired()}`, x + 10, y + 115);
-    }
-
-    /**
-     * Draw wave info
-     */
-    drawWaveInfo(dungeon) {
-        const x = this.canvas.width - 210;
-        const y = 10;
-        const width = 200;
-        const height = 60;
-        
-        // Draw background
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-        this.ctx.fillRect(x, y, width, height);
-        this.ctx.strokeStyle = '#fff';
-        this.ctx.lineWidth = 1;
-        this.ctx.strokeRect(x, y, width, height);
-        
-        // Draw wave info
-        this.ctx.font = '14px Arial';
-        this.ctx.fillStyle = '#fff';
-        this.ctx.fillText(dungeon.definition.name, x + 10, y + 20);
-        this.ctx.fillText(`Wave: ${dungeon.currentWave + 1}/${dungeon.totalWaves}`, x + 10, y + 35);
-        
-        // Draw progress bar
-        const progress = (dungeon.currentWave / dungeon.totalWaves) * 100;
-        this.ctx.fillStyle = '#555';
-        this.ctx.fillRect(x + 10, y + 45, w
-idth - 
-20, 8);
-        this.ctx.fillStyle = '#4CAF50';
-        this.ctx.fillRect(x + 10, y + 45, (width - 20) * (progress / 100), 8);
-    }
-
-    /**
-     * Draw spell hotbar
-     */
-    drawSpellHotbar(character) {
-        const x = this.canvas.width / 2 - 200;
-        const y = this.canvas.height - 50;
-        const width = 400;
-        const height = 40;
-        
-        // Draw background
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-        this.ctx.fillRect(x, y, width, height);
-        
-        // Draw spell slots
-        const spellCount = Math.min(character.abilities.length, 5);
-        const slotWidth = width / spellCount;
-        
-        for (let i = 0; i < spellCount; i++) {
-            const spellId = character.abilities[i];
-            const spellDef = SpellDefinitions[spellId];
-            
-            if (spellDef) {
-                // Draw slot background
-                this.ctx.fillStyle = character.spellCooldowns[spellId] ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.1)';
-                this.ctx.fillRect(x + i * slotWidth, y, slotWidth, height);
-                
-                // Draw spell icon
-                this.ctx.font = '20px Arial';
-                this.ctx.textAlign = 'center';
-                this.ctx.textBaseline = 'middle';
-                this.ctx.fillText(spellDef.icon, x + i * slotWidth + slotWidth / 2, y + height / 2);
-                
-                // Draw cooldown indicator
-                if (character.spellCooldowns[spellId]) {
-                    const remaining = character.spellCooldowns[spellId] - Date.now();
-                    const cooldownPercent = (remaining / spellDef.baseCooldown) * 100;
-                    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-                    this.ctx.fillRect(x + i * slotWidth, y + height - 5, slotWidth * (cooldownPercent / 100), 5);
-                }
-                
-                // Draw spell name
-                this.ctx.font = '8px Arial';
-                this.ctx.
-fillStyl
-e = '#fff';
-                this.ctx.fillText(spellDef.name, x + i * slotWidth + slotWidth / 2, y + height - 5);
-            }
+            const monsters = dungeon.getCurrentMonsters();
+            this.ctx.fillText(`Enemies: ${monsters.length}`, 10, 40);
         }
     }
 
@@ -585,30 +423,20 @@ e = '#fff';
         const character = this.gameEngine.character;
         
         // Draw character info
-        this.drawCharacterPanel(character);
-        
-        // Draw main menu
-        this.drawMainMenu();
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.font = '16px Arial';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(`${character.name} - Level ${character.level}`, this.canvas.width / 2, 50);
     }
 
     /**
-     * Draw main menu
+     * Draw UI
      */
-    drawMainMenu() {
-        const centerX = this.canvas.width / 2;
-        const centerY = this.canvas.height / 2;
-        
-        // Draw title
-        this.ctx.font = '36px Arial';
-        this.ctx.fillStyle = '#fff';
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText('Auto Blattler', centerX, centerY - 100);
-        
-        // Draw menu options
-        this.ctx.font = '20px Arial';
-        this.ctx.fillText('Start Dungeon', centerX, centerY - 30);
-        this.ctx.fillText('Admin Panel', centerX, centerY + 10);
-        this.ctx.fillText('Export/Import', centerX, centerY + 50);
+    renderUI() {
+        // Render all UI elements
+        for (const element of this.uiElements) {
+            element.render(this.ctx);
+        }
     }
 
     /**
@@ -617,10 +445,8 @@ e = '#fff';
     renderAnimations() {
         for (let i = this.animations.length - 1; i >= 0; i--) {
             const anim = this.animations[i];
-            if (anim.update) anim.update(this.deltaTime);
-            if (anim.draw) anim.draw(this.ctx, this.camera);
-            
-            if (anim.isComplete && anim.isComplete()) {
+            anim.render(this.ctx, this.deltaTime);
+            if (anim.isComplete()) {
                 this.animations.splice(i, 1);
             }
         }
@@ -631,15 +457,21 @@ e = '#fff';
      */
     renderParticles() {
         for (let i = this.particleEffects.length - 1; i >= 0; i--) {
-            const particle = this.particleEffects[i];
-            if (particle.update) particle.update(this.deltaTime);
-            if (particle.draw) particle.draw(this.ctx, this.camera);
-            
-            if (particle.isDead && particle.isDead()) {
-                this.par
-ticleEffe
-cts.splice(i, 1);
+            const effect = this.particleEffects[i];
+            effect.render(this.ctx, this.deltaTime);
+            if (effect.isComplete()) {
+                this.particleEffects.splice(i, 1);
             }
+        }
+    }
+
+    /**
+     * Center camera on character
+     */
+    centerCameraOnCharacter() {
+        if (this.gameEngine && this.gameEngine.character) {
+            this.camera.x = this.gameEngine.character.position.x - this.canvas.width / 2;
+            this.camera.y = this.gameEngine.character.position.y - this.canvas.height / 2;
         }
     }
 
@@ -653,26 +485,32 @@ cts.splice(i, 1);
     /**
      * Add particle effect
      */
-    addParticle(particle) {
-        this.particleEffects.push(particle);
+    addParticleEffect(effect) {
+        this.particleEffects.push(effect);
     }
 
     /**
-     * Center camera on character
+     * Add UI element
      */
-    centerCameraOnCharacter() {
-        if (!this.gameEngine || !this.gameEngine.character) return;
-        
-        const character = this.gameEngine.character;
-        this.camera.x = character.position.x - this.canvas.width / 2;
-        this.camera.y = character.position.y - this.canvas.height / 2;
+    addUIElement(element) {
+        this.uiElements.push(element);
+    }
+
+    /**
+     * Remove UI element
+     */
+    removeUIElement(element) {
+        const index = this.uiElements.indexOf(element);
+        if (index >= 0) {
+            this.uiElements.splice(index, 1);
+        }
     }
 
     /**
      * Adjust alpha of a color
      */
     adjustAlpha(color, alpha) {
-        // Simple hex to rgba conversion
+        // Simple alpha adjustment for hex colors
         if (color.startsWith('#')) {
             const r = parseInt(color.slice(1, 3), 16);
             const g = parseInt(color.slice(3, 5), 16);
@@ -683,17 +521,15 @@ cts.splice(i, 1);
     }
 
     /**
-     * Get canvas dimensions
+     * Get class color
      */
-    getCanvasDimensions() {
-        return {
-            width: this.canvas.width,
-            height: this.canvas.height
+    getClassColor(classType) {
+        const colors = {
+            archer: '#4CAF50',
+            warrior: '#F44336',
+            mage: '#2196F3',
+            rogue: '#FFC107'
         };
+        return colors[classType.toLowerCase()] || '#ffffff';
     }
-}
-
-// Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { Renderer };
 }
