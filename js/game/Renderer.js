@@ -69,7 +69,9 @@ class Renderer {
      */
     handleResize() {
         const container = document.getElementById('game-container') || document.body;
-        const width = container.clientWidth || window.innerWidth;
+        const width = container.clientWidth || window.innerWidt
+
+h;
         const height = container.clientHeight || window.innerHeight;
         
         // Set canvas size
@@ -216,7 +218,8 @@ class Renderer {
     drawDungeonBackground(backgroundType) {
         // Draw background based on type
         switch (backgroundType) {
-            case 'forest':
+            case 'forest'
+:
                 this.drawForestBackground();
                 break;
             case 'crypt':
@@ -289,9 +292,7 @@ class Renderer {
                 0,
                 Math.PI * 2
             );
-            th
-is.
-ctx.stroke();
+            this.ctx.stroke();
         }
     }
 
@@ -565,9 +566,7 @@ ctx.stroke();
                 
                 // Draw spell name
                 this.ctx.font = '8px Arial';
-                this.ctx.
-fillStyl
-e = '#fff';
+                this.ctx.fillStyle = '#fff';
                 this.ctx.fillText(spellDef.name, x + i * slotWidth + slotWidth / 2, y + height - 5);
             }
         }
@@ -633,9 +632,7 @@ e = '#fff';
             if (particle.draw) particle.draw(this.ctx, this.camera);
             
             if (particle.isDead && particle.isDead()) {
-                this.par
-ticleEffe
-cts.splice(i, 1);
+                this.particleEffects.splice(i, 1);
             }
         }
     }
@@ -690,7 +687,6 @@ cts.splice(i, 1);
     }
 }
 
-// Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
+// Export for use in other modulesif (typeof module !== 'undefined' && module.exports) {
     module.exports = { Renderer };
 }
