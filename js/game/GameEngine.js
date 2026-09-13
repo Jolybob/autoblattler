@@ -326,9 +326,7 @@ class GameEngine {
      * Register render callback
      */
     onRender(callback) {
-        this.rend
-erCallba
-cks.push(callback);
+        this.renderCallbacks.push(callback);
     }
 
     /**
@@ -399,8 +397,7 @@ cks.push(callback);
             dungeon: this.currentDungeon ? {
                 name: this.currentDungeon.definition.name,
              
-   curren
-tWave: this.currentWave,
+   currentWave: this.currentWave,
                 totalWaves: this.currentDungeon.totalWaves
             } : null
         };
@@ -430,11 +427,9 @@ tWave: this.currentWave,
     }
 }
 
-// Global game engine instance
-let gameEngine = null;
+// Global game engine instancelet gameEngine = null;
 
-// Initialize when DOM is ready
-if (typeof document !== 'undefined') {
+// Initialize when DOM is readyif (typeof document !== 'undefined') {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
             gameEngine = new GameEngine();
@@ -446,7 +441,6 @@ if (typeof document !== 'undefined') {
     gameEngine = new GameEngine();
 }
 
-// Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
+// Export for use in other modulesif (typeof module !== 'undefined' && module.exports) {
     module.exports = { GameEngine, gameEngine };
 }
