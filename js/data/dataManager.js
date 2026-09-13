@@ -27,6 +27,7 @@ class DataManager {
                 playTime: 0
             }
         };
+        this.fileUtils = new FileUtils();
     }
 
     /**
@@ -69,7 +70,10 @@ class DataManager {
     }
 
     /**
-     * Get all characters
+     * Get all c
+
+
+haracters
      */
     getAllCharacters() {
         return this.gameData.characters.map(data => this.deserializeCharacter(data));
@@ -124,7 +128,9 @@ class DataManager {
         character.equipment = data.equipment || character.equipment;
         character.skills = data.skills || character.skills;
         character.abilities = data.abilities || character.abilities;
-        character.gold = data.gold || 0;
+        character.gold = data.gold 
+||
+ 0;
         character.kills = data.kills || 0;
         character.dungeonsCompleted = data.dungeonsCompleted || 0;
         character.wavesSurvived = data.wavesSurvived || 0;
@@ -202,7 +208,10 @@ class DataManager {
                 this.gameData = { ...this.gameData, ...data };
             }
             this.gameData.lastUpdated = new Date().toISOString();
-            return true;
+      
+  
+  
+  return true;
         } catch (e) {
             console.error('Error importing data:', e);
             return false;
@@ -225,33 +234,15 @@ class DataManager {
      */
     exportToFile(filename = 'autoblattler_save.json') {
         const data = this.exportData();
-        const blob = new Blob([data], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        return this.fileUtils.downloadFile(data, filename, 'application/json');
     }
 
     /**
      * Import from file
      */
     async importFromFile(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const content = e.target.result;
-                resolve(this.importData(content));
-            };
-            reader.onerror = (e) => {
-                console.error('Error reading file:', e);
-                reject(e);
-            };
-            reader.readAsText(file);
-        });
+        const content = await this.fileUtils.readFile(file);
+        return this.importData(content);
     }
 
     /**
@@ -301,8 +292,11 @@ class DataManager {
                 totalKills: 0,
                 totalGold: 0,
                 totalXP: 0,
-                dungeonsCompleted: 0,
-                playTime: 0
+                dungeonsCompleted: 
+0,
+
+   
+             playTime: 0
             }
         };
     }
@@ -315,10 +309,8 @@ class DataManager {
     }
 }
 
-// Global data manager instance
-const dataManager = new DataManager();
+// Global data manager instanceconst dataManager = new DataManager();
 
-// Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
+// Export for use in other modulesif (typeof module !== 'undefined' && module.exports) {
     module.exports = { DataManager, dataManager };
 }
