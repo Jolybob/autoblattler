@@ -19,20 +19,17 @@ class GameEngine {
         this.lastFpsUpdate = 0;
         this.fpsFrameCount = 0;
         
-        // Game systems
-        this.combatSystem = null;
+        // Game systems        this.combatSystem = null;
         this.progressionSystem = null;
         this.renderer = null;
         this.dataManager = null;
         
-        // Game state
-        this.character = null;
+        // Game state        this.character = null;
         this.currentDungeon = null;
         this.currentWave = 0;
         this.gameMode = 'idle'; // 'idle', 'combat', 'dungeon', 'admin'
         
-        // Callbacks
-        this.updateCallbacks = [];
+        // Callbacks        this.updateCallbacks = [];
         this.renderCallbacks = [];
         
         this.init();
@@ -44,16 +41,13 @@ class GameEngine {
     init() {
         console.log('Initializing Game Engine...');
         
-        // Initialize systems
-        this.combatSystem = new CombatSystem(this);
+        // Initialize systems        this.combatSystem = new CombatSystem(this);
         this.progressionSystem = new ProgressionSystem(this);
         this.dataManager = dataManager;
         
-        // Load saved data
-        this.loadGame();
+        // Load saved data        this.loadGame();
         
-        // Set up renderer if available
-        if (typeof Renderer !== 'undefined') {
+        // Set up renderer if available        if (typeof Renderer !== 'undefined') {
             this.renderer = new Renderer(this);
         }
         
@@ -108,11 +102,9 @@ class GameEngine {
         if (!this.isRunning) return;
         
         const now = performance.now();
-        this.deltaTime = (now - this.lastUpdateTime) / 1000; // Convert to seconds
-        this.lastUpdateTime = now;
+        this.deltaTime = (now - this.lastUpdateTime) / 1000; // Convert to seconds        this.lastUpdateTime = now;
         
-        // Cap delta time to prevent spiral of death
-        if (this.deltaTime > 0.1) {
+        // Cap delta time to prevent spiral of death        if (this.deltaTime > 0.1) {
             this.deltaTime = 0.1;
         }
         
@@ -124,16 +116,14 @@ class GameEngine {
             this.renderer.render(this.deltaTime);
         }
         
-        // Update FPS counter
-        this.fpsFrameCount++;
+        // Update FPS counter        this.fpsFrameCount++;
         if (now - this.lastFpsUpdate >= 1000) {
             this.fps = this.fpsFrameCount;
             this.fpsFrameCount = 0;
             this.lastFpsUpdate = now;
         }
         
-        // Continue the loop
-        requestAnimationFrame(() => this.gameLoop());
+        // Continue the loop        requestAnimationFrame(() => this.gameLoop());
     }
 
     /**
@@ -142,8 +132,7 @@ class GameEngine {
     update(deltaTime) {
         this.frameCount++;
         
-        // Update all systems
-        if (this.combatSystem) {
+        // Update all systems        if (this.combatSystem) {
             this.combatSystem.update();
         }
         
@@ -151,18 +140,15 @@ class GameEngine {
             this.progressionSystem.update(deltaTime);
         }
         
-        // Execute update callbacks
-        for (const callback of this.updateCallbacks) {
+        // Execute update callbacks        for (const callback of this.updateCallbacks) {
             callback(deltaTime);
         }
         
-        // Update character
-        if (this.character) {
+        // Update character        if (this.character) {
             this.updateCharacter(deltaTime);
         }
         
-        // Update dungeon
-        if (this.currentDungeon) {
+        // Update dungeon        if (this.currentDungeon) {
             this.updateDungeon(deltaTime);
         }
     }
@@ -175,25 +161,21 @@ class GameEngine {
     updateCharacter(deltaTime) {
         const character = this.character;
         
-        // Update cooldowns
-        const now = Date.now();
+        // Update cooldowns        const now = Date.now();
         if (now >= character.attackCooldown) {
             character.attackCooldown = 0;
         }
         
-        // Update spell cooldowns
-        for (const spellId in character.spellCooldowns) {
+        // Update spell cooldowns        for (const spellId in character.spellCooldowns) {
             if (now >= character.spellCooldowns[spellId]) {
                 delete character.spellCooldowns[spellId];
             }
         }
         
-        // Regenerate mana
-        const manaRegen = character.stats.maxMana * 0.01 * deltaTime;
+        // Regenerate mana        const manaRegen = character.stats.maxMana * 0.01 * deltaTime;
         character.stats.mana = Math.min(character.stats.maxMana, character.stats.mana + manaRegen);
         
-        // Check for level up
-        if (character.experience >= character.calculateXPRequired()) {
+        // Check for level up        if (character.experience >= character.calculateXPRequired()) {
             character.levelUp();
         }
     }
@@ -202,14 +184,11 @@ class GameEngine {
      * Update dungeon
      */
     updateDungeon(deltaTime) {
-        // Check if current wave is cleared
-        const aliveMonsters = this.currentDungeon.getCurrentMonsters();
+        // Check if current wave is cleared        const aliveMonsters = this.currentDungeon.getCurrentMonsters();
         if (aliveMonsters.length === 0) {
-            // Wave cleared, advance to next wave
-            const nextWave = this.currentDungeon.nextWave();
+            // Wave cleared, advance to next wave            const nextWave = this.currentDungeon.nextWave();
             if (nextWave === null) {
-                // Dungeon completed
-                this.completeDungeon();
+                // Dungeon completed                this.completeDungeon();
             } else {
                 this.currentWave++;
                 this.gameMode = 'combat';
@@ -242,12 +221,10 @@ class GameEngine {
    
      this.gameMode = 'dungeon';
         
-        // Start the first wave
-        this.currentDungeon.start();
+        // Start the first wave        this.currentDungeon.start();
         const monsters = this.currentDungeon.getCurrentMonsters();
         
-        // Start combat
-        if (this.combatSystem) {
+        // Start combat        if (this.combatSystem) {
             this.combatSystem.startBattle(this.character, monsters);
         }
         
@@ -263,8 +240,7 @@ class GameEngine {
         const reward = this.currentDungeon.complete();
         this.gameMode = 'idle';
         
-        // Save progress
-        this.saveGame();
+        // Save progress        this.saveGame();
         
         return reward;
     }
@@ -278,8 +254,7 @@ class GameEngine {
         this.currentDungeon.fail();
         this.gameMode = 'idle';
         
-        // Save progress
-        this.saveGame();
+        // Save progress        this.saveGame();
     }
 
     /**
@@ -289,8 +264,7 @@ class GameEngine {
         if (!this.character) return false;
         if (!this.combatSystem) return false;
         
-        return this.combatSystem.castSpell(
-            this.combatSystem.activeBattles[0],
+        return this.combatSystem.castSpell(            this.combatSystem.activeBattles[0],
             spellId,
             targets
         );
@@ -339,8 +313,7 @@ class GameEngine {
         if (characters.length > 0) {
             this.setCharacter(characters[0]);
         } else {
-            // Create default character
-            const defaultCharacter = new Character('Hero', CharacterClass.ARCHER);
+            // Create default character            const defaultCharacter = new Character('Hero', CharacterClass.ARCHER);
             this.setCharacter(defaultCharacter);
             this.dataManager.saveCharacter(defaultCharacter);
         }
