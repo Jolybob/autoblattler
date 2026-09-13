@@ -1,10 +1,12 @@
 // ============================================
 // RENDERER.JS - Game Renderer
 // ============================================
+
 /**
  * Rendering system for the game
  * Handles drawing characters, monsters, spells, UI, etc.
  */
+
 class Renderer {
     constructor(gameEngine) {
         this.gameEngine = gameEngine;
@@ -23,6 +25,7 @@ class Renderer {
         
         this.init();
     }
+
     /**
      * Initialize renderer
      */
@@ -49,6 +52,7 @@ class Renderer {
         
         console.log('Renderer initialized');
     }
+
     /**
      * Set up event listeners
      */
@@ -59,12 +63,14 @@ class Renderer {
         // Initial resize
         this.handleResize();
     }
+
     /**
      * Handle window resize
      */
     handleResize() {
         const container = document.getElementById('game-container') || document.body;
-        const width = container.clientWidth || window.innerWidth
+        const width = container.clientWidth || window.innerWidt
+
 h;
         const height = container.clientHeight || window.innerHeight;
         
@@ -77,6 +83,7 @@ h;
             this.centerCameraOnCharacter();
         }
     }
+
     /**
      * Main render method
      */
@@ -119,6 +126,7 @@ h;
         
         this.lastRenderTime = now;
     }
+
     /**
      * Clear the canvas
      */
@@ -126,6 +134,7 @@ h;
         this.ctx.fillStyle = '#1a1a2e';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
+
     /**
      * Render combat scene
      */
@@ -154,6 +163,7 @@ h;
         // Draw combat UI
         this.drawCombatUI();
     }
+
     /**
      * Render idle scene
      */
@@ -173,6 +183,7 @@ h;
         // Draw idle UI
         this.drawIdleUI();
     }
+
     /**
      * Render admin panel
      */
@@ -180,6 +191,7 @@ h;
         // The admin panel is rendered separately in HTML
         // This method can be used for any game-specific admin rendering
     }
+
     /**
      * Draw background
      */
@@ -199,15 +211,14 @@ h;
             this.drawDungeonBackground(dungeon.definition.background);
         }
     }
+
     /**
      * Draw dungeon background
      */
     drawDungeonBackground(backgroundType) {
         // Draw background based on type
         switch (backgroundType) {
-            case 'fores
-t'
-:
+            case 'forest':
                 this.drawForestBackground();
                 break;
             case 'crypt':
@@ -223,6 +234,7 @@ t'
                 this.drawDefaultBackground();
         }
     }
+
     /**
      * Draw forest background
      */
@@ -235,6 +247,7 @@ t'
             this.ctx.fillRect(x, y, 20, 100);
         }
     }
+
     /**
      * Draw crypt background
      */
@@ -245,6 +258,7 @@ t'
             this.ctx.fillRect(x, 0, 10, this.canvas.height);
         }
     }
+
     /**
      * Draw fortress background
      */
@@ -257,6 +271,7 @@ t'
             }
         }
     }
+
     /**
      * Draw abyss background
      */
@@ -281,6 +296,7 @@ is.
 ctx.stroke();
         }
     }
+
     /**
      * Draw default background
      */
@@ -292,6 +308,7 @@ ctx.stroke();
         this.ctx.fillStyle = gradient;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
+
     /**
      * Draw character
      */
@@ -329,6 +346,7 @@ ctx.stroke();
         this.ctx.textBaseline = 'middle';
         this.ctx.fillText(classDef ? classDef.icon : '🧙', x, y);
         
+
     
     // Draw character name
         this.ctx.font = '12px Arial';
@@ -344,6 +362,7 @@ ctx.stroke();
             this.drawCastingIndicator(x, y, size, character.currentSpell);
         }
     }
+
     /**
      * Draw casting indicator
      */
@@ -354,6 +373,7 @@ ctx.stroke();
         this.ctx.arc(x, y, size / 2 + 10, 0, Math.PI * 2);
         this.ctx.stroke();
     }
+
     /**
      * Draw monster
      */
@@ -402,6 +422,7 @@ ctx.stroke();
             this.ctx.fillText('FROZEN', x - 20, y - size / 2 - 5);
         }
     }
+
     /**
      * Draw combat UI
      */
@@ -422,6 +443,7 @@ ctx.stroke();
         // Draw spell hotbar
         this.drawSpellHotbar(character);
     }
+
     /**
      * Draw character panel
      */
@@ -471,6 +493,7 @@ ctx.stroke();
         this.ctx.fillText(`💰 ${character.gold}`, x + 10, y + 100);
         this.ctx.fillText(`📈 ${character.experience}/${character.calculateXPRequired()}`, x + 10, y + 115);
     }
+
     /**
      * Draw wave info
      */
@@ -496,12 +519,11 @@ ctx.stroke();
         // Draw progress bar
         const progress = (dungeon.currentWave / dungeon.totalWaves) * 100;
         this.ctx.fillStyle = '#555';
-        this.ctx.fillRect(x + 10, y + 45, w
-idth - 
-20, 8);
+        this.ctx.fillRect(x + 10, y + 45, width - 20, 8);
         this.ctx.fillStyle = '#4CAF50';
         this.ctx.fillRect(x + 10, y + 45, (width - 20) * (progress / 100), 8);
     }
+
     /**
      * Draw spell hotbar
      */
@@ -551,6 +573,7 @@ e = '#fff';
             }
         }
     }
+
     /**
      * Draw idle UI
      */
@@ -565,6 +588,7 @@ e = '#fff';
         // Draw main menu
         this.drawMainMenu();
     }
+
     /**
      * Draw main menu
      */
@@ -584,6 +608,7 @@ e = '#fff';
         this.ctx.fillText('Admin Panel', centerX, centerY + 10);
         this.ctx.fillText('Export/Import', centerX, centerY + 50);
     }
+
     /**
      * Draw animations
      */
@@ -598,6 +623,7 @@ e = '#fff';
             }
         }
     }
+
     /**
      * Draw particle effects
      */
@@ -614,18 +640,21 @@ cts.splice(i, 1);
             }
         }
     }
+
     /**
      * Add animation
      */
     addAnimation(animation) {
         this.animations.push(animation);
     }
+
     /**
      * Add particle effect
      */
     addParticle(particle) {
         this.particleEffects.push(particle);
     }
+
     /**
      * Center camera on character
      */
@@ -636,6 +665,7 @@ cts.splice(i, 1);
         this.camera.x = character.position.x - this.canvas.width / 2;
         this.camera.y = character.position.y - this.canvas.height / 2;
     }
+
     /**
      * Adjust alpha of a color
      */
@@ -649,6 +679,7 @@ cts.splice(i, 1);
         }
         return color;
     }
+
     /**
      * Get canvas dimensions
      */
@@ -659,6 +690,7 @@ cts.splice(i, 1);
         };
     }
 }
+
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { Renderer };
