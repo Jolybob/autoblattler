@@ -69,7 +69,9 @@ class Renderer {
      */
     handleResize() {
         const container = document.getElementById('game-container') || document.body;
-        const width = container.clientWidth || window.innerWidth;
+        const width = container.clientWidth || window.innerWidt
+
+h;
         const height = container.clientHeight || window.innerHeight;
         
         // Set canvas size
@@ -216,7 +218,9 @@ class Renderer {
     drawDungeonBackground(backgroundType) {
         // Draw background based on type
         switch (backgroundType) {
-            case 'forest':
+            case 'fores
+t'
+:
                 this.drawForestBackground();
                 break;
             case 'crypt':
@@ -468,9 +472,7 @@ ctx.stroke();
         this.ctx.fillStyle = '#555';
         this.ctx.fillRect(x + 10, y + 50, width - 20, 10);
         const healthPercent = (character.stats.health / character.stats.maxHealth) * 100;
-        this.ctx.fillStyle = healthPercent > 
-50 ? '
-#4CAF50' : healthPercent > 25 ? '#FFC107' : '#F44336';
+        this.ctx.fillStyle = healthPercent > 50 ? '#4CAF50' : healthPercent > 25 ? '#FFC107' : '#F44336';
         this.ctx.fillRect(x + 10, y + 50, (width - 20) * (healthPercent / 100), 10);
         this.ctx.font = '10px Arial';
         this.ctx.fillStyle = '#fff';
@@ -517,7 +519,8 @@ ctx.stroke();
         // Draw progress bar
         const progress = (dungeon.currentWave / dungeon.totalWaves) * 100;
         this.ctx.fillStyle = '#555';
-        this.ctx.fillRect(x + 10, y + 45, width - 
+        this.ctx.fillRect(x + 10, y + 45, w
+idth - 
 20, 8);
         this.ctx.fillStyle = '#4CAF50';
         this.ctx.fillRect(x + 10, y + 45, (width - 20) * (progress / 100), 8);
