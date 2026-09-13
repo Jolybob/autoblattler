@@ -1,12 +1,10 @@
 // ============================================
 // DATAMANAGER.JS - Data Management System
 // ============================================
-
 /**
  * Central data manager for the game
  * Handles loading, saving, and managing all game data
  */
-
 class DataManager {
     constructor() {
         this.gameData = {
@@ -27,9 +25,8 @@ class DataManager {
                 playTime: 0
             }
         };
-        this.fileUtils = new FileUtils();
+        
     }
-
     /**
      * Initialize with default data
      */
@@ -42,7 +39,6 @@ class DataManager {
             this.gameData.characters.push(this.serializeCharacter(defaultCharacter));
         }
     }
-
     /**
      * Save character
      */
@@ -59,7 +55,6 @@ class DataManager {
         this.gameData.lastUpdated = new Date().toISOString();
         return serialized;
     }
-
     /**
      * Load character by ID
      */
@@ -68,17 +63,14 @@ class DataManager {
         if (!data) return null;
         return this.deserializeCharacter(data);
     }
-
     /**
      * Get all c
-
 
 haracters
      */
     getAllCharacters() {
         return this.gameData.characters.map(data => this.deserializeCharacter(data));
     }
-
     /**
      * Delete character
      */
@@ -86,7 +78,6 @@ haracters
         this.gameData.characters = this.gameData.characters.filter(c => c.id !== characterId);
         this.gameData.lastUpdated = new Date().toISOString();
     }
-
     /**
      * Serialize character for storage
      */
@@ -112,7 +103,6 @@ haracters
             attackCooldown: 0
         };
     }
-
     /**
      * Deserialize character from storage
      */
@@ -129,14 +119,14 @@ haracters
         character.skills = data.skills || character.skills;
         character.abilities = data.abilities || character.abilities;
         character.gold = data.gold 
-||
+|
+|
  0;
         character.kills = data.kills || 0;
         character.dungeonsCompleted = data.dungeonsCompleted || 0;
         character.wavesSurvived = data.wavesSurvived || 0;
         return character;
     }
-
     /**
      * Save game configuration
      */
@@ -144,14 +134,12 @@ haracters
         this.gameData.config = config;
         this.gameData.lastUpdated = new Date().toISOString();
     }
-
     /**
      * Load game configuration
      */
     loadConfig() {
         return this.gameData.config || {};
     }
-
     /**
      * Unlock content
      */
@@ -162,14 +150,12 @@ haracters
         this.gameData.unlockedContent[type][id] = true;
         this.gameData.lastUpdated = new Date().toISOString();
     }
-
     /**
      * Check if content is unlocked
      */
     isUnlocked(type, id) {
         return this.gameData.unlockedContent[type] && this.gameData.unlockedContent[type][id];
     }
-
     /**
      * Update statistics
      */
@@ -179,21 +165,18 @@ haracters
             this.gameData.lastUpdated = new Date().toISOString();
         }
     }
-
     /**
      * Get statistics
      */
     getStatistics() {
         return { ...this.gameData.statistics };
     }
-
     /**
      * Export all game data as JSON
      */
     exportData() {
         return JSON.stringify(this.gameData, null, 2);
     }
-
     /**
      * Import game data from JSON
      */
@@ -217,7 +200,6 @@ haracters
             return false;
         }
     }
-
     /**
      * Migrate data from older versions
      */
@@ -228,7 +210,6 @@ haracters
         }
         return data;
     }
-
     /**
      * Export to file
      */
@@ -236,7 +217,6 @@ haracters
         const data = this.exportData();
         return this.fileUtils.downloadFile(data, filename, 'application/json');
     }
-
     /**
      * Import from file
      */
@@ -244,7 +224,6 @@ haracters
         const content = await this.fileUtils.readFile(file);
         return this.importData(content);
     }
-
     /**
      * Save to local storage (fallback)
      */
@@ -257,7 +236,6 @@ haracters
             return false;
         }
     }
-
     /**
      * Load from local storage
      */
@@ -273,7 +251,6 @@ haracters
             return false;
         }
     }
-
     /**
      * Clear all data
      */
@@ -294,13 +271,11 @@ haracters
                 totalXP: 0,
                 dungeonsCompleted: 
 0,
-
    
              playTime: 0
             }
         };
     }
-
     /**
      * Get complete game state
      */
@@ -308,10 +283,8 @@ haracters
         return { ...this.gameData };
     }
 }
-
 // Global data manager instance
 const dataManager = new DataManager();
-
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { DataManager, dataManager };
