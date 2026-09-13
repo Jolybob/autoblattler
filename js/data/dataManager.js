@@ -36,7 +36,8 @@ class DataManager {
     init() {
         this.gameData.lastUpdated = new Date().toISOString();
         
-        // Create default character if none exists        if (this.gameData.characters.length === 0) {
+        // Create default character if none exists
+        if (this.gameData.characters.length === 0) {
             const defaultCharacter = new Character('Hero', CharacterClass.ARCHER);
             this.gameData.characters.push(this.serializeCharacter(defaultCharacter));
         }
@@ -199,10 +200,12 @@ haracters
     importData(jsonString) {
         try {
             const data = JSON.parse(jsonString);
-            // Validate and merge data            if (data.version) {
+            // Validate and merge data
+            if (data.version) {
                 this.gameData = this.migrateData(data);
             } else {
-                // Legacy data format                this.gameData = { ...this.gameData, ...data };
+                // Legacy data format
+                this.gameData = { ...this.gameData, ...data };
             }
             this.gameData.lastUpdated = new Date().toISOString();
       
@@ -219,7 +222,8 @@ haracters
      * Migrate data from older versions
      */
     migrateData(data) {
-        // Add version-specific migrations here        if (data.version === '1.0.0') {
+        // Add version-specific migrations here
+        if (data.version === '1.0.0') {
             return data;
         }
         return data;
@@ -305,8 +309,10 @@ haracters
     }
 }
 
-// Global data manager instanceconst dataManager = new DataManager();
+// Global data manager instance
+const dataManager = new DataManager();
 
-// Export for use in other modulesif (typeof module !== 'undefined' && module.exports) {
+// Export for use in other modules
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = { DataManager, dataManager };
 }
