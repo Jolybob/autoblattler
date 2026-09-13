@@ -517,7 +517,8 @@ ctx.stroke();
         // Draw progress bar
         const progress = (dungeon.currentWave / dungeon.totalWaves) * 100;
         this.ctx.fillStyle = '#555';
-        this.ctx.fillRect(x + 10, y + 45, width - 20, 8);
+        this.ctx.fillRect(x + 10, y + 45, width - 
+20, 8);
         this.ctx.fillStyle = '#4CAF50';
         this.ctx.fillRect(x + 10, y + 45, (width - 20) * (progress / 100), 8);
     }
