@@ -47,7 +47,7 @@ class GameEngine {
         // Initialize systems
         this.combatSystem = new CombatSystem(this);
         this.progressionSystem = new ProgressionSystem(this);
-        this.dataManager = getDataManager();
+        this.dataManager = dataManager;
         
         // Load saved data
         this.loadGame();
@@ -399,7 +399,8 @@ cks.push(callback);
             dungeon: this.currentDungeon ? {
                 name: this.currentDungeon.definition.name,
              
-   currentWave: this.currentWave,
+   curren
+tWave: this.currentWave,
                 totalWaves: this.currentDungeon.totalWaves
             } : null
         };
