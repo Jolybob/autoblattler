@@ -47,7 +47,8 @@ class GameEngine {
         // Initialize systems
         this.combatSystem = new CombatSystem(this);
         this.progressionSystem = new ProgressionSystem(this);
-        this.dataManager = getDataManager();
+        this.dataManager = new DataManager();
+        this.dataManager.init();
         
         // Load saved data
         this.loadGame();
@@ -79,9 +80,7 @@ class GameEngine {
      */
     stop() {
         this.isRunning = false;
- 
-     
-  console.log('Game stopped');
+        console.log('Game stopped');
     }
 
     /**
@@ -108,13 +107,8 @@ class GameEngine {
         if (!this.isRunning) return;
         
         const now = performance.now();
-        this.deltaTime = (now - this.lastUpdateTime) / 1000; // Convert to seconds
+        this.deltaTime = (now - this.lastUpdateTime) / 1000;
         this.lastUpdateTime = now;
-        
-        // Cap delta time to prevent spiral of death
-        if (this.deltaTime > 0.1) {
-            this.deltaTime = 0.1;
-        }
         
         if (!this.isPaused) {
             this.update(this.deltaTime);
@@ -140,179 +134,133 @@ class GameEngine {
      * Update game state
      */
     update(deltaTime) {
-        this.frameCount++;
-        
-        // Update all systems
-        if (this.combatSystem) {
-            this.combatSystem.update();
-        }
-        
-        if (this.progressionSystem) {
-            this.progressionSystem.update(deltaTime);
-        }
-        
-        // Execute update callbacks
+        // Update all registered callbacks
         for (const callback of this.updateCallbacks) {
             callback(deltaTime);
         }
         
-        // Update character
-        if (this.character) {
-            this.updateCharacter(deltaTime);
-        }
-        
-        // Update dungeon
-        if (this.currentDungeon) {
-            this.updateDungeon(deltaTime);
-        }
-    }
-
-  
-  /**
-
-     * Update character
-     */
-    updateCharacter(deltaTime) {
-        const character = this.character;
-        
-        // Update cooldowns
-        const now = Date.now();
-        if (now >= character.attackCooldown) {
-            character.attackCooldown = 0;
-        }
-        
-        // Update spell cooldowns
-        for (const spellId in character.spellCooldowns) {
-            if (now >= character.spellCooldowns[spellId]) {
-                delete character.spellCooldowns[spellId];
-            }
-        }
-        
-        // Regenerate mana
-        const manaRegen = character.stats.maxMana * 0.01 * deltaTime;
-        character.stats.mana = Math.min(character.stats.maxMana, character.stats.mana + manaRegen);
-        
-        // Check for level up
-        if (character.experience >= character.calculateXPRequired()) {
-            character.levelUp();
+        // Update game mode specific logic
+        switch (this.gameMode) {
+            case 'combat':
+                this.updateCombat(deltaTime);
+                break;
+            case 'dungeon':
+                this.updateDungeon(deltaTime);
+                break;
+            case 'admin':
+                // Admin mode doesn't need updates
+                break;
+            default:
+                this.updateIdle(deltaTime);
         }
     }
 
     /**
-     * Update dungeon
+     * Update combat mode
+     */
+    updateCombat(deltaTime) {
+        if (this.combatSystem) {
+            this.combatSystem.update(deltaTime);
+        }
+    }
+
+    /**
+     * Update dungeon mode
      */
     updateDungeon(deltaTime) {
-        // Check if current wave is cleared
-        const aliveMonsters = this.currentDungeon.getCurrentMonsters();
-        if (aliveMonsters.length === 0) {
-            // Wave cleared, advance to next wave
-            const nextWave = this.currentDungeon.nextWave();
-            if (nextWave === null) {
-                // Dungeon completed
-                this.completeDungeon();
+        if (this.combatSystem) {
+            this.combatSystem.update(deltaTime);
+        }
+    }
+
+    /**
+     * Update idle mode
+     */
+    updateIdle(deltaTime) {
+        // Idle animations, etc.
+    }
+
+    /**
+     * Load game data
+     */
+    loadGame() {
+        if (this.dataManager) {
+            const characters = this.dataManager.getAllCharacters();
+            if (characters.length > 0) {
+                this.character = characters[0];
             } else {
-                this.currentWave++;
-                this.gameMode = 'combat';
+                // Create default character
+                this.character = new Character('Hero', CharacterClass.ARCHER);
+                this.dataManager.saveCharacter(this.character);
             }
         }
     }
 
     /**
-     * Set the current character
+     * Save game data
      */
-    setCharacter(character) {
-        this.character = character;
-        if (this.progressionSystem) {
-            this.progressionSystem.setCharacter(character);
+    saveGame() {
+        if (this.dataManager && this.character) {
+            this.dataManager.saveCharacter(this.character);
         }
     }
 
     /**
-     * Start a new dungeon
+     * Start a new wave
+     */
+    startWave() {
+        if (this.gameMode !== 'combat' && this.gameMode !== 'dungeon') {
+            this.gameMode = 'combat';
+        }
+        
+        this.currentWave++;
+        
+        if (this.combatSystem) {
+            this.combatSystem.startWave(this.currentWave);
+        }
+        
+        console.log(`Starting wave ${this.currentWave}`);
+    }
+
+    /**
+     * End current wave
+     */
+    endWave() {
+        if (this.combatSystem) {
+            this.combatSystem.endWave();
+        }
+        
+        // Save progress
+        this.saveGame();
+    }
+
+    /**
+     * Start a dungeon
      */
     startDungeon(dungeonId) {
-        if (!this.character) {
-            console.error('No character selected');
-            return false;
-        }
+        this.gameMode = 'dungeon';
+        this.currentWave = 0;
         
-        this.currentDungeon = new Dungeon(dungeonId, this.character);
-        this.currentWave =
- 0;
-   
-     this.gameMode = 'dungeon';
-        
-        // Start the first wave
-        this.currentDungeon.start();
-        const monsters = this.currentDungeon.getCurrentMonsters();
-        
-        // Start combat
         if (this.combatSystem) {
-            this.combatSystem.startBattle(this.character, monsters);
+            this.combatSystem.startDungeon(dungeonId);
         }
         
-        return true;
+        console.log(`Starting dungeon: ${dungeonId}`);
     }
 
     /**
-     * Complete the current dungeon
+     * End dungeon
      */
-    completeDungeon() {
-        if (!this.currentDungeon) return;
-        
-        const reward = this.currentDungeon.complete();
+    endDungeon() {
         this.gameMode = 'idle';
+        this.currentWave = 0;
+        
+        if (this.combatSystem) {
+            this.combatSystem.endDungeon();
+        }
         
         // Save progress
         this.saveGame();
-        
-        return reward;
-    }
-
-    /**
-     * Fail the current dungeon
-     */
-    failDungeon() {
-        if (!this.currentDungeon) return;
-        
-        this.currentDungeon.fail();
-        this.gameMode = 'idle';
-        
-        // Save progress
-        this.saveGame();
-    }
-
-    /**
-     * Cast a spell
-     */
-    castSpell(spellId, targets) {
-        if (!this.character) return false;
-        if (!this.combatSystem) return false;
-        
-        return this.combatSystem.castSpell(
-            this.combatSystem.activeBattles[0],
-            spellId,
-            targets
-        );
-    }
-
-    /**
-     * Attack a target
-     */
-    attackTarget(target) {
-        if (!this.character || !this.character.isAlive) return false;
-        
-        const now = Date.now();
-        if (now < this.character.attackCooldown) return false;
-        
-        const damage = this.character.attack(target);
-        if (damage > 0) {
-            target.takeDamage(damage);
-            this.character.attackCooldown = now + (1000 / this.character.stats.attackSpeed);
-            return true;
-        }
-        
-        return false;
     }
 
     /**
@@ -326,124 +274,102 @@ class GameEngine {
      * Register render callback
      */
     onRender(callback) {
-        this.rend
-erCallba
-cks.push(callback);
+        this.renderCallbacks.push(callback);
     }
 
     /**
-     * Load game from saved data
+     * Set character
      */
-    loadGame() {
-        if (!this.dataManager) return;
-        
-        const characters = this.dataManager.getAllCharacters();
-        if (characters.length > 0) {
-            this.setCharacter(characters[0]);
-        } else {
-            // Create default character
-            const defaultCharacter = new Character('Hero', CharacterClass.ARCHER);
-            this.setCharacter(defaultCharacter);
-            this.dataManager.saveCharacter(defaultCharacter);
-        }
-        
-        console.log('Game loaded');
-    }
-
-    /**
-     * Save game to storage
-     */
-    saveGame() {
-        if (!this.dataManager || !this.character) return;
-        
-        this.dataManager.saveCharacter(this.character);
-        console.log('Game saved');
-    }
-
-    /**
-     * Export game data
-     */
-    exportGame() {
-        if (!this.dataManager) return null;
-        return this.dataManager.exportData();
-    }
-
-    /**
-     * Import game data
-     */
-    importGame(jsonString) {
-        if (!this.dataManager) return false;
-        return this.dataManager.importData(jsonString);
-    }
-
-    /**
-     * Get game state
-     */
-    getGameState() {
-        return {
-            isRunning: this.isRunning,
-            isPaused: this.isPaused,
-            gameMode: this.gameMode,
-            fps: this.fps,
-            frameCount: this.frameCount,
-            character: this.character ? {
-                name: this.character.name,
-                level: this.character.level,
-                health: this.character.stats.health,
-                maxHealth: this.character.stats.maxHealth,
-                mana: this.character.stats.mana,
-                maxMana: this.character.stats.maxMana,
-                gold: this.character.gold,
-                xp: this.character.experience
-            } : null,
-            dungeon: this.currentDungeon ? {
-                name: this.currentDungeon.definition.name,currentWave: this.currentWave,
-                totalWaves: this.currentDungeon.totalWaves
-            } : null
-        };
-    }
-
-    /**
-     * Reset the game
-     */
-    reset() {
-        this.stop();
-        this.character = null;
-        this.currentDungeon = null;
-        this.currentWave = 0;
-        this.gameMode = 'idle';
-        this.frameCount = 0;
-        this.fps = 0;
-        
-        if (this.combatSystem) {
-            this.combatSystem.clearAllBattles();
-        }
-        
+    setCharacter(character) {
+        this.character = character;
         if (this.dataManager) {
-            this.dataManager.clearAllData();
+            this.dataManager.saveCharacter(character);
         }
-        
-        console.log('Game reset');
+    }
+
+    /**
+     * Get character
+     */
+    getCharacter() {
+        return this.character;
+    }
+
+    /**
+     * Get current dungeon
+     */
+    getCurrentDungeon() {
+        return this.currentDungeon;
+    }
+
+    /**
+     * Set current dungeon
+     */
+    setCurrentDungeon(dungeon) {
+        this.currentDungeon = dungeon;
+    }
+
+    /**
+     * Get current wave
+     */
+    getCurrentWave() {
+        return this.currentWave;
+    }
+
+    /**
+     * Set current wave
+     */
+    setCurrentWave(wave) {
+        this.currentWave = wave;
+    }
+
+    /**
+     * Get game mode
+     */
+    getGameMode() {
+        return this.gameMode;
+    }
+
+    /**
+     * Set game mode
+     */
+    setGameMode(mode) {
+        this.gameMode = mode;
+    }
+
+    /**
+     * Get combat system
+     */
+    getCombatSystem() {
+        return this.combatSystem;
+    }
+
+    /**
+     * Get progression system
+     */
+    getProgressionSystem() {
+        return this.progressionSystem;
+    }
+
+    /**
+     * Get data manager
+     */
+    getDataManager() {
+        return this.dataManager;
+    }
+
+    /**
+     * Get renderer
+     */
+    getRenderer() {
+        return this.renderer;
     }
 }
 
-// Global game engine instance
-let gameEngine = null;
-
-// Initialize when DOM is ready
-if (typeof document !== 'undefined') {
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            gameEngine = new GameEngine();
-        });
-    } else {
-        gameEngine = new GameEngine();
-    }
+// Initialize game when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        window.gameEngine = new GameEngine();
+    });
 } else {
-    gameEngine = new GameEngine();
-}
-
-// Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { GameEngine, gameEngine };
+    window.gameEngine = new GameEngine();
 }
