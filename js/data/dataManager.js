@@ -27,7 +27,6 @@ class DataManager {
                 playTime: 0
             }
         };
-        
     }
 
     /**
@@ -70,8 +69,7 @@ class DataManager {
     }
 
     /**
-     * Get all c
-haracters
+     * Get all characters
      */
     getAllCharacters() {
         return this.gameData.characters.map(data => this.deserializeCharacter(data));
@@ -126,8 +124,7 @@ haracters
         character.equipment = data.equipment || character.equipment;
         character.skills = data.skills || character.skills;
         character.abilities = data.abilities || character.abilities;
-        character.gold = data.gold ||
- 0;
+        character.gold = data.gold || 0;
         character.kills = data.kills || 0;
         character.dungeonsCompleted = data.dungeonsCompleted || 0;
         character.wavesSurvived = data.wavesSurvived || 0;
@@ -205,8 +202,7 @@ haracters
                 this.gameData = { ...this.gameData, ...data };
             }
             this.gameData.lastUpdated = new Date().toISOString();
-          
-  return true;
+            return true;
         } catch (e) {
             console.error('Error importing data:', e);
             return false;
@@ -288,8 +284,7 @@ haracters
                 totalGold: 0,
                 totalXP: 0,
                 dungeonsCompleted: 0,
-   
-             playTime: 0
+                playTime: 0
             }
         };
     }
@@ -303,7 +298,7 @@ haracters
 }
 
 // Global data manager instance
-const dataManager = new DataManager();
+var dataManager = new DataManager();
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
