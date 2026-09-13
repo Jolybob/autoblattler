@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Blattler - Horizontal Combat</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Admin Panel Toggle -->
+        <button id="admin-toggle" class="admin-button">Admin Panel</button>
+        
+        <!-- Game Canvas -->
+        <div id="game-canvas">
+            <canvas id="combat-canvas"></canvas>
+            <div id="game-ui">
+                <div class="game-stats">
+                    <div class="stat">
+                        <span class="stat-label">HP:</span>
+                        <span id="player-hp" class="stat-value">100</span>
+                        <span class="stat-max">/100</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Mana:</span>
+                        <span id="player-mana" class="stat-value">50</span>
+                        <span class="stat-max">/50</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Level:</span>
+                        <span id="player-level" class="stat-value">1</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Gold:</span>
+                        <span id="player-gold" class="stat-value">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Wave:</span>
+                        <span id="current-wave" class="stat-value">1</span>
+                    </div>
+                </div>
+                
+                <div class="combat-info">
+                    <div id="enemy-info">No enemies</div>
+                    <div id="combat-log"></div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="start-wave" class="action-button">Start Wave</button>
+                    <button id="use-spell-1" class="action-button spell-button">Spell 1</button>
+                    <button id="use-spell-2" class="action-button spell-button">Spell 2</button>
+                    <button id="use-spell-3" class="action-button spell-button">Spell 3</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Admin Panel -->
+        <div id="admin-panel" class="admin-panel hidden">
+            <div class="admin-header">
+                <h2>Admin Configuration</h2>
+                <button id="close-admin" class="close-button">&times;</button>
+            </div>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="characters">Characters</button>
+                <button class="admin-tab" data-tab="monsters">Monsters</button>
+                <button class="admin-tab" data-tab="spells">Spells</button>
+                <button class="admin-tab" data-tab="dungeons">Dungeons</button>
+                <button class="admin-tab" data-tab="classes">Classes</button>
+                <button class="admin-tab" data-tab="skills">Skill Tree</button>
+                <button class="admin-tab" data-tab="progression">Progression</button>
+            </div>
+            
+            <div class="admin-content">
+                <!-- Characters Tab -->
+                <div id="tab-characters" class="admin-tab-content active">
+                    <h3>Character Parameters</h3>
+                    <div class="config-section">
+                        <label>Base Health:</label>
+                        <input type="number" id="config-base-health" value="100">
+                    </div>
+                    <div class="config-section">
+                        <label>Base Mana:</label>
+                        <input type="number" id="config-base-mana" value="50">
+                    </div>
+                    <div class="config-section">
+                        <label>Base Attack:</label>
+                        <input type="number" id="config-base-attack" value="10">
+                    </div>
+                    <div class="config-section">
+                        <label>Base Defense:</label>
+                        <input type="number" id="config-base-defense" value="5">
+                    </div>
+                    <div class="config-section">
+                        <label>Health per Level:</label>
+                        <input type="number" id="config-health-per-level" value="20">
+                    </div>
+                    <div class="config-section">
+                        <label>Mana per Level:</label>
+                        <input type="number" id="config-mana-per-level" value="10">
+                    </div>
+                    <div class="config-section">
+                        <label>Attack per Level:</label>
+                        <input type="number" id="config-attack-per-level" value="2">
+                    </div>
+                    <div class="config-section">
+                        <label>Starting Gold:</label>
+                        <input type="number" id="config-starting-gold" value="0">
+                    </div>
+                    <button class="save-button" onclick="saveCharacterConfig()">Save Character Config</button>
+                </div>
+                
+                <!-- Monsters Tab -->
+                <div id="tab-monsters" class="admin-tab-content">
+                    <h3>Monster Parameters</h3>
+                    <div class="config-section">
+                        <label>Monster Health Multiplier:</label>
+                        <input type="number" id="config-monster-health" step="0.1" value="1.0">
+                    </div>
+                    <div class="config-section">
+                        <label>Monster Attack Multiplier:</label>
+                        <input type="number" id="config-monster-attack" step="0.1" value="1.0">
+                    </div>
+                    <div class="config-section">
+                        <label>Monster Gold Drop Multiplier:</label>
+                        <input type="number" id="config-monster-gold" step="0.1" value="1.0">
+                    </div>
+                    <div class="config-section">
+                        <label>Monster XP Multiplier:</label>
+                        <input type="number" id="config-monster-xp" step="0.1" value="1.0">
+                    </div>
+                    <div class="config-section">
+                        <label>Enemies per Wave:</label>
+                        <input type="number" id="config-enemies-per-wave" value="5">
+                    </div>
+                    <div class="config-section">
+                        <label>Wave Difficulty Scaling:</label>
+                        <input type="number" id="config-wave-scaling" step="0.1" value="1.1">
+                    </div>
+                    <button class="save-button" onclick="saveMonsterConfig()">Save Monster Config</button>
+                </div>
+                
+                <!-- Spells Tab -->
+                <div id="tab-spells" class="admin-tab-content">
+                    <h3>Spell Parameters</h3>
+                    <div class="config-section">
+                        <label>Spell Cooldown Reduction:</label>
+                        <input type="number" id="config-spell-cooldown" step="0.1" value="1.0">
+                    </div>
+                    <div class="config-section">
+                        <label>Spell Damage Multiplier:</label>
+                        <input type="number" id="config-spell-damage" step="0.1" value="1.0">
+                    </div>
+                    <div class="config-section">
+                        <label>Spell Mana Cost Multiplier:</label>
+                        <input type="number" id="config-spell-mana-cost" step="0.1" value="1.0">
+                    </div>
+                    <div class="spell-list">
+                        <h4>Available Spells:</h4>
+                        <div id="spell-config-list"></div>
+                    </div>
+                    <button class="save-button" onclick="saveSpellConfig()">Save Spell Config</button>
+                </div>
+                
+                <!-- Dungeons Tab -->
+                <div id="tab-dungeons" class="admin-tab-content">
+                    <h3>Dungeon Parameters</h3>
+                    <div class="config-section">
+                        <label>Dungeon Length (Waves):</label>
+                        <input type="number" id="config-dungeon-length" value="10">
+                    </div>
+                    <div class="config-section">
+                        <label>Boss Health Multiplier:</label>
+                        <input type="number" id="config-boss-health" step="0.1" value="3.0">
+                    </div>
+                    <div class="config-section">
+                        <label>Boss Damage Multiplier:</label>
+                        <input type="number" id="config-boss-damage" step="0.1" value="2.0">
+                    </div>
+                    <div class="config-section">
+                        <label>Dungeon Reward Multiplier:</label>
+                        <input type="number" id="config-dungeon-reward" step="0.1" value="2.0">
+                    </div>
+                    <div class="dungeon-list">
+                        <h4>Dungeon Configurations:</h4>
+                        <div id="dungeon-config-list"></div>
+                    </div>
+                    <button class="save-button" onclick="saveDungeonConfig()">Save Dungeon Config</button>
+                </div>
+                
+                <!-- Classes Tab -->
+                <div id="tab-classes" class="admin-tab-content">
+                    <h3>Class Parameters</h3>
+                    <div class="class-list">
+                        <h4>Available Classes:</h4>
+                        <div id="class-config-list"></div>
+                    </div>
+                    <div class="config-section">
+                        <label>Class Unlock Level:</label>
+                        <input type="number" id="config-class-unlock-level" value="10">
+                    </div>
+                    <button class="save-button" onclick="saveClassConfig()">Save Class Config</button>
+                </div>
+                
+                <!-- Skill Tree Tab -->
+                <div id="tab-skills" class="admin-tab-content">
+                    <h3>Skill Tree Parameters</h3>
+                    <div class="config-section">
+                        <label>Skill Points per Level:</label>
+                        <input type="number" id="config-skill-points-per-level" value="1">
+                    </div>
+                    <div class="config-section">
+                        <label>Max Skill Tree Depth:</label>
+                        <input type="number" id="config-max-skill-depth" value="5">
+                    </div>
+                    <div class="config-section">
+                        <label>Skill Effect Multiplier:</label>
+                        <input type="number" id="config-skill-effect" step="0.1" value="1.0">
+                    </div>
+                    <div class="skill-tree-visual">
+                        <h4>Skill Tree Preview:</h4>
+                        <canvas id="skill-tree-canvas" width="400" height="400"></canvas>
+                    </div>
+                    <button class="save-button" onclick="saveSkillConfig()">Save Skill Config</button>
+                </div>
+                
+                <!-- Progression Tab -->
+                <div id="tab-progression" class="admin-tab-content">
+                    <h3>Progression Parameters</h3>
+                    <div class="config-section">
+                        <label>XP Required Base:</label>
+                        <input type="number" id="config-xp-base" value="100">
+                    </div>
+                    <div class="config-section">
+                        <label>XP Scaling Factor:</label>
+                        <input type="number" id="config-xp-scaling" step="0.1" value="1.5">
+                    </div>
+                    <div class="config-section">
+                        <label>Gold per Kill Base:</label>
+                        <input type="number" id="config-gold-base" value="10">
+                    </div>
+                    <div class="config-section">
+                        <label>Gold Scaling Factor:</label>
+                        <input type="number" id="config-gold-scaling" step="0.1" value="1.2">
+                    </div>
+                    <div class="config-section">
+                        <label>Loot Drop Chance (%):</label>
+                        <input type="number" id="config-loot-chance" value="25">
+                    </div>
+                    <button class="save-button" onclick="saveProgressionConfig()">Save Progression Config</button>
+                </div>
+            </div>
+            
+            <div class="admin-footer">
+                <button id="export-config" class="export-button">Export All Configurations</button>
+                <button id="import-config" class="import-button">Import Configurations</button>
+                <input type="file" id="config-file-input" accept=".json" style="display: none;">
+                <button id="reset-config" class="reset-button">Reset to Default</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/utils/fileUtils.js"></script>
+    <script src="js/data/models.js"></script>
+    <script src="js/data/Character.js"></script>
+    <script src="js/data/Monster.js"></script>
+    <script src="js/data/Spell.js"></script>
+    <script src="js/data/Dungeon.js"></script>
+    <script src="js/data/Class.js"></script>
+    <script src="js/data/SkillTree.js"></script>
+    <script src="js/data/dataManager.js"></script>
+    <script src="js/game/Renderer.js"></script>
+    <script src="js/game/CombatSystem.js"></script>
+    <script src="js/game/ProgressionSystem.js"></script>
+    <script src="js/game/GameEngine.js"></script>
+    <script src="js/config/ConfigManager.js"></script>
+    <script src="js/config/AdminPanel.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
